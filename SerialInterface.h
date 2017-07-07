@@ -23,6 +23,12 @@ public:
 private:
     std::shared_ptr<boost::asio::serial_port> serial;
     std::shared_ptr<boost::asio::io_service> io;
+
+    /**
+     * Poll an interface too see if it's connected
+     * @param device
+     */
+    static bool testWorking(std::string device);
 };
 
 

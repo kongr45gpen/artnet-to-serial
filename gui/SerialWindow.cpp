@@ -52,7 +52,10 @@ void SerialWindow::draw() {
 
 void SerialWindow::refreshInterfaces() {
     devices = SerialInterface::listInterfaces();
-    ifaces = boost::algorithm::join(devices, std::string("\0", 1));
+    ifaces = boost::algorithm::join(devices, std::string("\0", 1)) + '\0';
+    // the trailing NULL byte (double \0) is necessary
+
+    BOOST_LOG_TRIVIAL(trace) << "Found " << devices.size() << " functional interfaces";
 
     std::transform(devices.begin(), devices.end(), devices.begin(), [](std::string device)->std::string {
         return "/dev/" + device;

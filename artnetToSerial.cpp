@@ -5,11 +5,20 @@
 #include "imgui_impl_glfw.h"
 #include "SerialInterface.h"
 #include "gui/SerialWindow.h"
+#include "LoggingUtilities.h"
+#include "gui/LogWindow.h"
 #include <cstdio>
 #include <vector>
 #include <string>
+#include <memory>
 #include <iostream>
-#include <boost/algorithm/string/join.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/trivial.hpp>
+//#include <boost/log/attributes.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/console.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
 #include <GLFW/glfw3.h>
 
 static void error_callback(int error, const char* description)
@@ -17,8 +26,21 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error %d: %s\n", error, description);
 }
 
+
+
 int main(int, char**)
 {
+//    boost::log::add_file_log("sample.log");
+    boost::log::add_common_attributes();
+    auto console_sink = boost::log::add_console_log(std::cout);
+    console_sink->set_formatter(&LoggingUtilities::coloring_terminal_formatter);
+
+    boost::log::core::get()->set_filter
+            (
+                    boost::log::trivial::severity >= boost::log::trivial::trace
+            );
+    BOOST_LOG_TRIVIAL(info) << "Hello!";
+
     // Setup window
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
@@ -44,7 +66,14 @@ int main(int, char**)
     ImVec4 clear_color = ImColor(114, 144, 154);
 
     SerialWindow serialWindow = SerialWindow();
+    auto logWindow_p = std::make_shared<LogWindow>();
+    LogWindow &logWindow = *logWindow_p;
     serialWindow.init();
+    logWindow.init();
+
+    typedef boost::log::sinks::synchronous_sink< LoggingUtilities::GUISinkBackend > sink_t;
+    boost::shared_ptr< sink_t > sink(new sink_t(logWindow_p));
+    boost::log::core::get()->add_sink(sink);
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -86,6 +115,7 @@ int main(int, char**)
         }
 
         serialWindow.draw();
+        logWindow.draw();
 
         // Rendering
         int display_w, display_h;

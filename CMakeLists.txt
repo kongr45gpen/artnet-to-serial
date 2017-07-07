@@ -17,7 +17,7 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 include_directories ("${PROJECT_SOURCE_DIR}/lib/imgui")
 add_subdirectory (lib)
 
-add_executable(ArtnetToSerial imgui_impl_glfw.cpp artnetToSerial.cpp SerialInterface.cpp gui/SerialWindow.cpp gui/SerialWindow.h)
+add_executable(ArtnetToSerial imgui_impl_glfw.cpp artnetToSerial.cpp SerialInterface.cpp gui/SerialWindow.cpp LoggingUtilities.cpp gui/LogWindow.cpp)
 target_link_libraries (ArtnetToSerial ImGui ImGuiDemo glfw GL)
 target_link_libraries (ArtnetToSerial glfw GL)
 target_link_libraries (ArtnetToSerial ${Boost_LIBRARIES} pthread)
