@@ -43,13 +43,14 @@ void LogWindow::draw() {
 //        ImGui::EndPopup();
 //    }
 
+    // TODO: Use a list or another better data structure
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4,1)); // Tighten spacing
     for (int i = 0; i < items.size(); i++)
     {
         const char* item = items[i].second.c_str();
         if (!filter.PassFilter(item))
             continue;
-        ImVec4 col = items[i].first; // A better implementation may store a type per-item. For the sample let's just parse the text.
+        ImVec4 col = items[i].first;
         ImGui::PushStyleColor(ImGuiCol_Text, col);
         ImGui::TextUnformatted(item);
         ImGui::PopStyleColor();

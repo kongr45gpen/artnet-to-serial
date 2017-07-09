@@ -7,6 +7,8 @@
 #include "gui/SerialWindow.h"
 #include "LoggingUtilities.h"
 #include "gui/LogWindow.h"
+#include "ArtnetWindow.h"
+#include "ArtnetThread.h"
 #include <cstdio>
 #include <vector>
 #include <string>
@@ -15,6 +17,7 @@
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/thread.hpp>
 //#include <boost/log/attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/console.hpp>
@@ -65,15 +68,20 @@ int main(int, char**)
     bool show_another_window = false;
     ImVec4 clear_color = ImColor(114, 144, 154);
 
-    SerialWindow serialWindow = SerialWindow();
     auto logWindow_p = std::make_shared<LogWindow>();
     LogWindow &logWindow = *logWindow_p;
-    serialWindow.init();
     logWindow.init();
-
     typedef boost::log::sinks::synchronous_sink< LoggingUtilities::GUISinkBackend > sink_t;
     boost::shared_ptr< sink_t > sink(new sink_t(logWindow_p));
     boost::log::core::get()->add_sink(sink);
+
+    SerialWindow serialWindow = SerialWindow();
+    auto artnetWindow_p = std::make_shared<ArtnetWindow>();
+    ArtnetWindow &artnetWindow = *artnetWindow_p;
+    serialWindow.init();
+
+    ArtnetThread artnetThread(artnetWindow_p);
+    boost::thread t(artnetThread);
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -116,6 +124,7 @@ int main(int, char**)
 
         serialWindow.draw();
         logWindow.draw();
+        artnetWindow.draw();
 
         // Rendering
         int display_w, display_h;
