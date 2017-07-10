@@ -9,6 +9,8 @@
 #include "gui/LogWindow.h"
 #include "ArtnetWindow.h"
 #include "ArtnetThread.h"
+#include "DMXBucket.h"
+#include "gui/DMXWindow.h"
 #include <cstdio>
 #include <vector>
 #include <string>
@@ -23,16 +25,13 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <GLFW/glfw3.h>
-
-static void error_callback(int error, const char* description)
-{
+#define BOOST_LOG_TRIVIAL(x) if(0) std::cout
+static void error_callback(int error, const char *description) {
     fprintf(stderr, "Error %d: %s\n", error, description);
 }
 
 
-
-int main(int, char**)
-{
+int main(int, char **) {
 //    boost::log::add_file_log("sample.log");
     boost::log::add_common_attributes();
     auto console_sink = boost::log::add_console_log(std::cout);
@@ -43,12 +42,13 @@ int main(int, char**)
                     boost::log::trivial::severity >= boost::log::trivial::trace
             );
     BOOST_LOG_TRIVIAL(info) << "Hello!";
+//    boost::log::core::get()->set_logging_enabled(false);
 
     // Setup window
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         return 1;
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Artnet to Serial", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(1280, 720, "Artnet to Serial", NULL, NULL);
     glfwMakeContextCurrent(window);
 
     // Setup ImGui binding
@@ -71,21 +71,24 @@ int main(int, char**)
     auto logWindow_p = std::make_shared<LogWindow>();
     LogWindow &logWindow = *logWindow_p;
     logWindow.init();
-    typedef boost::log::sinks::synchronous_sink< LoggingUtilities::GUISinkBackend > sink_t;
-    boost::shared_ptr< sink_t > sink(new sink_t(logWindow_p));
+    typedef boost::log::sinks::synchronous_sink<LoggingUtilities::GUISinkBackend> sink_t;
+    boost::shared_ptr<sink_t> sink(new sink_t(logWindow_p));
     boost::log::core::get()->add_sink(sink);
+
+    auto dmxBucket_p = std::make_shared<DMXBucket>();
+    DMXBucket &dmxBucket = *dmxBucket_p;
 
     SerialWindow serialWindow = SerialWindow();
     auto artnetWindow_p = std::make_shared<ArtnetWindow>();
     ArtnetWindow &artnetWindow = *artnetWindow_p;
     serialWindow.init();
+    DMXWindow dmxWindow(dmxBucket);
 
-    ArtnetThread artnetThread(artnetWindow_p);
+    ArtnetThread artnetThread(artnetWindow_p, dmxBucket_p);
     boost::thread t(artnetThread);
 
     // Main loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         if (glfwGetWindowAttrib(window, GLFW_ICONIFIED)) {
             // Don't waste CPU rendering when the window is minimised
             glfwWaitEvents();
@@ -100,24 +103,23 @@ int main(int, char**)
             static float f = 0.0f;
             ImGui::Text("Hello, world!");
             ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-            ImGui::ColorEdit3("clear color", (float*)&clear_color);
+            ImGui::ColorEdit3("clear color", (float *) &clear_color);
             if (ImGui::Button("Test Window")) show_test_window ^= 1;
             if (ImGui::Button("Another Window")) show_another_window ^= 1;
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
+                        ImGui::GetIO().Framerate);
         }
 
         // 2. Show another simple window, this time using an explicit Begin/End pair
-        if (show_another_window)
-        {
-            ImGui::SetNextWindowSize(ImVec2(200,100), ImGuiSetCond_FirstUseEver);
+        if (show_another_window) {
+            ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
             ImGui::Begin("Another Window", &show_another_window);
             ImGui::Text("Hello");
             ImGui::End();
         }
 
         // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
-        if (show_test_window)
-        {
+        if (show_test_window) {
             ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
             ImGui::ShowTestWindow(&show_test_window);
         }
@@ -125,6 +127,7 @@ int main(int, char**)
         serialWindow.draw();
         logWindow.draw();
         artnetWindow.draw();
+        dmxWindow.draw();
 
         // Rendering
         int display_w, display_h;

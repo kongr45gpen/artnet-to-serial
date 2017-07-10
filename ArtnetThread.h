@@ -7,15 +7,17 @@
 #include <boost/array.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include "ArtnetWindow.h"
+#include "DMXBucket.h"
 
 
 class ArtnetThread {
     std::shared_ptr<ArtnetWindow> artnetWindow;
+    std::shared_ptr<DMXBucket> dmxBucket;
 
     std::shared_ptr<boost::asio::io_service> io;
     std::shared_ptr<boost::asio::ip::udp::socket> socket;
     boost::asio::ip::udp::endpoint remoteEndpoint;
-    boost::array<char, 600> buffer;
+    std::array<char, 600> buffer;
 
     boost::optional<boost::asio::ip::address> requestedAddress;
     std::shared_ptr<boost::mutex> reqAddress_mtx_;
@@ -28,7 +30,7 @@ class ArtnetThread {
 public:
     void operator()();
 
-    ArtnetThread(const std::shared_ptr<ArtnetWindow> window);
+    ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std::shared_ptr<DMXBucket> dmxBucket);
 
     void startReceive();
     void handleReceive(const boost::system::error_code &error,

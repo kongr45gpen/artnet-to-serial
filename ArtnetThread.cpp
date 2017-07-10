@@ -18,8 +18,8 @@ void ArtnetThread::operator()() {
     io->run();
 }
 
-ArtnetThread::ArtnetThread(const std::shared_ptr<ArtnetWindow> window) :
-        artnetWindow(window) {
+ArtnetThread::ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std::shared_ptr<DMXBucket> dmxBucket) :
+        artnetWindow(window), dmxBucket(dmxBucket) {
     io = std::make_shared<io_service>();
     reqAddress_mtx_ = std::make_shared<boost::mutex>();
 }
@@ -112,7 +112,10 @@ inline void ArtnetThread::OpDmx(std::size_t size) {
     if (size != length + 18) {
         BOOST_LOG_TRIVIAL(error) << "Length of [" << length << "] in data does not match received length [" << size - 18
                                  << "]";
+        return;
     }
+
+    dmxBucket->setData(buffer.begin() + 18, buffer.begin() + 18 + ((int) length));
 }
 
 void ArtnetThread::OpPoll() {

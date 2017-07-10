@@ -25,7 +25,9 @@ add_executable(ArtnetToSerial
         LoggingUtilities.cpp
         gui/LogWindow.cpp
         ArtnetWindow.cpp
-        ArtnetThread.cpp)
+        ArtnetThread.cpp
+        DMXBucket.cpp
+        gui/DMXWindow.cpp)
 target_link_libraries (ArtnetToSerial ImGui ImGuiDemo glfw GL)
 target_link_libraries (ArtnetToSerial glfw GL)
 target_link_libraries (ArtnetToSerial ${Boost_LIBRARIES} pthread)
