@@ -4,7 +4,7 @@
 #include "SerialWindow.h"
 #include "../SerialInterface.h"
 
-void SerialWindow::init() {
+SerialWindow::SerialWindow() : sendingLED({1.0f, 0.6f, 0.1f, 0.8f}, boost::chrono::milliseconds(200), "Sending") {
     refreshInterfaces();
 
     // Select the last interface
@@ -23,14 +23,15 @@ void SerialWindow::draw() {
     if (ImGui::Button("Test")) {
         if (serialInterface.is_initialized()) {
             serialInterface->test();
+            sendingLED.announce();
         } else {
             BOOST_LOG_TRIVIAL(warning) << "No selected serial interface to test.";
         }
     }
+    ImGui::SameLine(0, 300);
+    sendingLED.draw();
 
     ImGui::Text("Select your Arduino's serial port:");
-
-    static int baud = 230400;
 
     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() * 0.5f);
     if (ImGui::Combo("", &item, ifaces.c_str())) { // Combo using values packed in a single constant string (for really quick combo)
@@ -42,9 +43,10 @@ void SerialWindow::draw() {
         }
         serialInterface.emplace(devices[item]);
     }
-    ImGui::SameLine();
+    ImGui::SameLine(0, 50);
     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
-    ImGui::SliderInt("baud rate", &baud, baud, baud);
+//    ImGui::SliderInt("baud rate", &baud, baud, baud);
+    ImGui::TextDisabled("baud rate: 230400");
 
     ImGui::End();
 

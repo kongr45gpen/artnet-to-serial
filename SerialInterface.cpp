@@ -74,14 +74,14 @@ SerialInterface::~SerialInterface() {
             serial->cancel();
             serial->close();
         } catch(...) {
-            BOOST_LOG_TRIVIAL(error) << "Unable to close";
+            BOOST_LOG_TRIVIAL(error) << "Unable to close serial interface";
         }
     }
     io.reset(); // TODO: See if this leaks memory
 }
 
 void SerialInterface::write(int channel, int value) {
-    BOOST_LOG_TRIVIAL(debug) << "Writing to serial port: [" << setfill('0') << setw(3) << channel << "] " << setw(3) << value;
+    BOOST_LOG_TRIVIAL(trace) << "Writing to serial port: [" << setfill('0') << setw(3) << channel << "] " << setw(3) << value;
 
     std::ostringstream ss;
     ss << channel << 'c' << value << 'w';

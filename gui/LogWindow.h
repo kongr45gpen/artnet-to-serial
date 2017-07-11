@@ -1,23 +1,23 @@
 #ifndef DEMO_LOGWINDOW_H
 #define DEMO_LOGWINDOW_H
 
-#include <string>
+#include <list>
 #include <vector>
 #include <array>
 #include <imgui.h>
 
-using std::vector;
+using std::list;
 using std::string;
 using std::pair;
 using std::array;
 
 class LogWindow {
 private:
-    vector<pair<ImVec4, string> > items;
+    list<pair<ImVec4, string> > items;
     bool scrollToBottom = false;
-    int comboItem = 0;
+    int comboItem = 1;
 public:
-    void init();
+    LogWindow();
     void draw();
 
     void addEntry(string text, array<float, 3> colour);

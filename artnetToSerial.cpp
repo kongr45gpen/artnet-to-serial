@@ -25,11 +25,6 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <GLFW/glfw3.h>
-#define BOOST_LOG_TRIVIAL(x) if(0) std::cout
-static void error_callback(int error, const char *description) {
-    fprintf(stderr, "Error %d: %s\n", error, description);
-}
-
 
 int main(int, char **) {
 //    boost::log::add_file_log("sample.log");
@@ -39,13 +34,15 @@ int main(int, char **) {
 
     boost::log::core::get()->set_filter
             (
-                    boost::log::trivial::severity >= boost::log::trivial::trace
+                    boost::log::trivial::severity >= boost::log::trivial::debug
             );
-    BOOST_LOG_TRIVIAL(info) << "Hello!";
+    BOOST_LOG_TRIVIAL(info) << "Starting artnetToSerial...";
 //    boost::log::core::get()->set_logging_enabled(false);
 
     // Setup window
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback([](int error, const char *description) {
+        BOOST_LOG_TRIVIAL(error) << "GLFW Error: " << error << description;
+    });
     if (!glfwInit())
         return 1;
     GLFWwindow *window = glfwCreateWindow(1280, 720, "Artnet to Serial", NULL, NULL);
@@ -54,23 +51,12 @@ int main(int, char **) {
     // Setup ImGui binding
     ImGui_ImplGlfw_Init(window, true);
 
-    // Load Fonts
-    // (there is a default font, this is only if you want to change it. see extra_fonts/README.txt for more details)
-    //ImGuiIO& io = ImGui::GetIO();
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../extra_fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../extra_fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyClean.ttf", 13.0f);
-    //io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyTiny.ttf", 10.0f);
-    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-
     bool show_test_window = false;
     bool show_another_window = false;
     ImVec4 clear_color = ImColor(114, 144, 154);
 
     auto logWindow_p = std::make_shared<LogWindow>();
     LogWindow &logWindow = *logWindow_p;
-    logWindow.init();
     typedef boost::log::sinks::synchronous_sink<LoggingUtilities::GUISinkBackend> sink_t;
     boost::shared_ptr<sink_t> sink(new sink_t(logWindow_p));
     boost::log::core::get()->add_sink(sink);
@@ -78,10 +64,9 @@ int main(int, char **) {
     auto dmxBucket_p = std::make_shared<DMXBucket>();
     DMXBucket &dmxBucket = *dmxBucket_p;
 
-    SerialWindow serialWindow = SerialWindow();
+    SerialWindow serialWindow;
     auto artnetWindow_p = std::make_shared<ArtnetWindow>();
     ArtnetWindow &artnetWindow = *artnetWindow_p;
-    serialWindow.init();
     DMXWindow dmxWindow(dmxBucket);
 
     ArtnetThread artnetThread(artnetWindow_p, dmxBucket_p);

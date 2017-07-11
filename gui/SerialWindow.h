@@ -5,19 +5,21 @@
 #include <string>
 #include <boost/optional.hpp>
 #include "../SerialInterface.h"
+#include "ActivityLED.h"
 
 class SerialWindow {
     std::string ifaces;
     std::vector<std::string> devices;
 
     boost::optional<SerialInterface> serialInterface;
+    ActivityLED sendingLED;
 
     int item; // The selected item in the list
 
     void refreshInterfaces();
-
 public:
-    void init();
+    SerialWindow();
+
     void draw();
 };
 

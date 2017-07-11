@@ -4,13 +4,17 @@
 #include <boost/log/trivial.hpp>
 #include "LogWindow.h"
 
-void LogWindow::init() {
+LogWindow::LogWindow() {
     items.emplace_back(ImVec4(1.0,0.2,0.1,1.0),"Hello");
 }
 
 void LogWindow::draw() {
     ImGui::SetNextWindowSize(ImVec2(520,600), ImGuiSetCond_FirstUseEver);
     ImGui::Begin("Log");
+
+    if (items.size() > 1000) {
+        items.erase(items.begin(), items.begin().operator++(2));
+    }
 
     // TODO: display items starting from the bottom
 
@@ -45,12 +49,11 @@ void LogWindow::draw() {
 
     // TODO: Use a list or another better data structure
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4,1)); // Tighten spacing
-    for (int i = 0; i < items.size(); i++)
-    {
-        const char* item = items[i].second.c_str();
+    for (auto &it : items) {
+        const char* item = it.second.c_str();
         if (!filter.PassFilter(item))
             continue;
-        ImVec4 col = items[i].first;
+        ImVec4 col = it.first;
         ImGui::PushStyleColor(ImGuiCol_Text, col);
         ImGui::TextUnformatted(item);
         ImGui::PopStyleColor();
