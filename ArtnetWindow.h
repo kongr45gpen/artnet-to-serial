@@ -8,6 +8,7 @@
 #include <boost/thread/mutex.hpp>
 #include <queue>
 #include <functional>
+#include "gui/ActivityLED.h"
 
 class ArtnetWindow {
     std::set<std::string> controllers;
@@ -16,13 +17,11 @@ class ArtnetWindow {
 
     inline void changeTriggered();
 
-    boost::optional<boost::chrono::steady_clock::time_point> ledTimer;
-    bool healthy = false;
-
     std::queue<std::string> pendingDevices;
     std::function<void(bool, const std::string&)> deviceCallback;
 
-    boost::mutex health_mtx_;
+    ActivityLED receivingLED;
+
     boost::mutex devices_mtx_;
     boost::mutex device_callback_mtx_;
     ArtnetWindow(const ArtnetWindow&); // no copy constructor, due to mutexes
@@ -30,7 +29,9 @@ public:
     ArtnetWindow();
     void draw();
 
-    void notifyPacketReceived();
+    inline void notifyPacketReceived() {
+        receivingLED.announce();
+    };
     void pushController(const std::string &address);
 
     /**

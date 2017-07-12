@@ -8,7 +8,7 @@
 using boost::lock_guard;
 using boost::mutex;
 
-ArtnetWindow::ArtnetWindow() : health_mtx_() {
+ArtnetWindow::ArtnetWindow() : receivingLED({0.2, 1.0, 0, 0.7}, boost::chrono::milliseconds(50), "Receiving") {
     controllers.insert("127.0.0.1");
 }
 
@@ -30,24 +30,8 @@ void ArtnetWindow::draw() {
     bool enabled;
 
     // Show the healthy LED for a number of milliseconds
-    health_mtx_.lock();
-    if (healthy) {
-        if (ledTimer.is_initialized()) {
-            if (boost::chrono::steady_clock::now() - ledTimer.get() > boost::chrono::milliseconds(50)) {
-                ledTimer.reset();
-                healthy = false;
-            }
-        } else {
-            ledTimer = boost::chrono::steady_clock::now();
-        }
-    }
-    enabled = healthy;
-    health_mtx_.unlock();
-
     ImGui::SameLine(0, 300);
-    ImGui::PushStyleColor(ImGuiCol_CheckMark, {0.2, 1.0, 0, 0.7});
-    ImGui::Checkbox("Receiving", &enabled); // TODO: Make this non-selectable
-    ImGui::PopStyleColor();
+    receivingLED.draw();
 
     ImGui::Separator();
 
@@ -89,11 +73,6 @@ inline void ArtnetWindow::changeTriggered() {
 
 std::pair<bool, std::string> ArtnetWindow::getSelection() {
     return std::pair<bool, std::string>(anySelected, selectedInterface);
-}
-
-void ArtnetWindow::notifyPacketReceived() {
-    lock_guard<mutex> guard(health_mtx_); // lock the health variable before writing to it
-    healthy = true;
 }
 
 void ArtnetWindow::pushController(const std::string &address) {

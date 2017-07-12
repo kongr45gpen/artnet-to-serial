@@ -2,19 +2,16 @@
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/trivial.hpp>
+#include <iostream>
 #include "LogWindow.h"
 
-LogWindow::LogWindow() {
-    items.emplace_back(ImVec4(1.0,0.2,0.1,1.0),"Hello");
+LogWindow::LogWindow() : items(10) {
+    items.push_back(std::make_pair(ImVec4(1.0,0.2,0.1,1.0), "Hello"));
 }
 
 void LogWindow::draw() {
     ImGui::SetNextWindowSize(ImVec2(520,600), ImGuiSetCond_FirstUseEver);
     ImGui::Begin("Log");
-
-    if (items.size() > 1000) {
-        items.erase(items.begin(), items.begin().operator++(2));
-    }
 
     // TODO: display items starting from the bottom
 
@@ -47,7 +44,6 @@ void LogWindow::draw() {
 //        ImGui::EndPopup();
 //    }
 
-    // TODO: Use a list or another better data structure
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4,1)); // Tighten spacing
     for (auto &it : items) {
         const char* item = it.second.c_str();
@@ -69,6 +65,6 @@ void LogWindow::draw() {
 }
 
 void LogWindow::addEntry(std::string text, std::array<float, 3> colour) {
-    items.emplace_back(ImVec4(colour[0], colour[1], colour[2], 1.0f), text);
+    items.push_back(std::make_pair(ImVec4(colour[0], colour[1], colour[2], 1.0f), text));
     scrollToBottom = true;
 }

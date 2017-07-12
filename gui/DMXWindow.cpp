@@ -25,12 +25,17 @@ void DMXWindow::draw() {
             ImGui::Text("%d",i);
             ImGui::PopStyleColor();
             ImGui::NextColumn();
+
+            if (i == 0) {
+                ImGui::NextColumn();
+                i++;
+            }
         }
 
         std::ostringstream ss;
-        ss << std::setw(3) << std::setfill('0') << (int) (data[i]);
+        ss << std::setw(3) << std::setfill('0') << (int) (data[i-1]);
 
-        float brightness = 0.8f * data[i]/255.0f;
+        float brightness = 0.8f * data[i-1]/255.0f;
 
         ImGui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.3f, 0.8f, brightness));
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.15f, 0.9f, std::max(0.6f,brightness)));

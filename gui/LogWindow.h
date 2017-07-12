@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <imgui.h>
+#include <boost/circular_buffer.hpp>
 
 using std::list;
 using std::string;
@@ -13,7 +14,7 @@ using std::array;
 
 class LogWindow {
 private:
-    list<pair<ImVec4, string> > items;
+    boost::circular_buffer_space_optimized<pair<ImVec4, string> > items;
     bool scrollToBottom = false;
     int comboItem = 1;
 public:
