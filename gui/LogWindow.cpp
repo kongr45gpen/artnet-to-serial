@@ -5,7 +5,7 @@
 #include <iostream>
 #include "LogWindow.h"
 
-LogWindow::LogWindow() : items(10) {
+LogWindow::LogWindow() : items(400) {
     items.push_back(std::make_pair(ImVec4(1.0,0.2,0.1,1.0), "Hello"));
 }
 
@@ -45,6 +45,7 @@ void LogWindow::draw() {
 //    }
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4,1)); // Tighten spacing
+    // TODO: Use a mutex or something else for items
     for (auto &it : items) {
         const char* item = it.second.c_str();
         if (!filter.PassFilter(item))

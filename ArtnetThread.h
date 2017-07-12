@@ -8,11 +8,13 @@
 #include <boost/asio/ip/udp.hpp>
 #include "ArtnetWindow.h"
 #include "DMXBucket.h"
+#include "SerialThread.h"
 
 
 class ArtnetThread {
     std::shared_ptr<ArtnetWindow> artnetWindow;
     std::shared_ptr<DMXBucket> dmxBucket;
+    std::shared_ptr<SerialThread::Updater> serialUpdater;
 
     std::shared_ptr<boost::asio::io_service> io;
     std::shared_ptr<boost::asio::ip::udp::socket> socket;
@@ -30,7 +32,7 @@ class ArtnetThread {
 public:
     void operator()();
 
-    ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std::shared_ptr<DMXBucket> dmxBucket);
+    ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std::shared_ptr<DMXBucket> dmxBucket, const std::shared_ptr<SerialThread::Updater> serialUpdater);
 
     void startReceive();
     void handleReceive(const boost::system::error_code &error,

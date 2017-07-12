@@ -4,16 +4,22 @@
 #include "SerialWindow.h"
 #include "../SerialInterface.h"
 
-SerialWindow::SerialWindow() : sendingLED({1.0f, 0.6f, 0.1f, 0.8f}, boost::chrono::milliseconds(200), "Sending") {
-    refreshInterfaces();
+SerialWindow::SerialWindow(std::shared_ptr<SerialInterface> serialInterface) : serialInterface(serialInterface) {
+        refreshInterfaces();
 
-    // Select the last interface
-    serialInterface.emplace(devices.back());
-    item = (int) (devices.size() - 1);
+        // Connect to the last interface
+        if (!devices.empty()) {
+            serialInterface->connect(devices.back());
+        }
+        item = (int) (devices.size() - 1);
+
+        ImVec4 ledColour = {1.0f, 0.6f, 0.1f, 0.8f };
+        sendingLED = std::make_shared<ActivityLED>(ledColour, boost::chrono::milliseconds(200), "Sending");
+        serialInterface->setLed(sendingLED);
 }
 
 void SerialWindow::draw() {
-    ImGui::SetNextWindowSize(ImVec2(200,100), ImGuiSetCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
     ImGui::Begin("Arduino Serial Port");
 
     if (ImGui::Button("Refresh")) {
@@ -21,32 +27,26 @@ void SerialWindow::draw() {
     }
     ImGui::SameLine();
     if (ImGui::Button("Test")) {
-        if (serialInterface.is_initialized()) {
-            serialInterface->test();
-            sendingLED.announce();
-        } else {
-            BOOST_LOG_TRIVIAL(warning) << "No selected serial interface to test.";
-        }
+        serialInterface->test();
     }
     ImGui::SameLine(0, 300);
-    sendingLED.draw();
+    sendingLED->draw();
 
     ImGui::Text("Select your Arduino's serial port:");
 
     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() * 0.5f);
-    if (ImGui::Combo("", &item, ifaces.c_str())) { // Combo using values packed in a single constant string (for really quick combo)
+    if (ImGui::Combo("", &item,
+                     ifaces.c_str())) { // Combo using values packed in a single constant string (for really quick combo)
         // combo value changed
         BOOST_LOG_TRIVIAL(trace) << "Selected serial interface #" << item << " (" << devices[item] << ") from list";
-        if (serialInterface.is_initialized()) {
-            // Close the old serial interface
-            serialInterface.reset();
-        }
-        serialInterface.emplace(devices[item]);
+        // TODO: Connect from another thread
+        serialInterface->connect(devices[item]);
     }
     ImGui::SameLine(0, 50);
     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
-//    ImGui::SliderInt("baud rate", &baud, baud, baud);
     ImGui::TextDisabled("baud rate: 230400");
+
+    ImGui::Text("Data rate: %d bits/s", (int) (8 * serialInterface->getStats().getAverage()));
 
     ImGui::End();
 
@@ -59,7 +59,7 @@ void SerialWindow::refreshInterfaces() {
 
     BOOST_LOG_TRIVIAL(trace) << "Found " << devices.size() << " functional interfaces";
 
-    std::transform(devices.begin(), devices.end(), devices.begin(), [](std::string device)->std::string {
+    std::transform(devices.begin(), devices.end(), devices.begin(), [](std::string device) -> std::string {
         return "/dev/" + device;
     });
 }

@@ -11,14 +11,14 @@ class SerialWindow {
     std::string ifaces;
     std::vector<std::string> devices;
 
-    boost::optional<SerialInterface> serialInterface;
-    ActivityLED sendingLED;
+    std::shared_ptr<SerialInterface> serialInterface;
+    std::shared_ptr<ActivityLED> sendingLED;
 
     int item; // The selected item in the list
 
     void refreshInterfaces();
 public:
-    SerialWindow();
+    SerialWindow(std::shared_ptr<SerialInterface> serialInterface);
 
     void draw();
 };

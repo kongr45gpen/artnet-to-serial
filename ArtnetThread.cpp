@@ -18,8 +18,8 @@ void ArtnetThread::operator()() {
     io->run();
 }
 
-ArtnetThread::ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std::shared_ptr<DMXBucket> dmxBucket) :
-        artnetWindow(window), dmxBucket(dmxBucket) {
+ArtnetThread::ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std::shared_ptr<DMXBucket> dmxBucket, const std::shared_ptr<SerialThread::Updater> serialUpdater) :
+        artnetWindow(window), dmxBucket(dmxBucket), serialUpdater(serialUpdater) {
     io = std::make_shared<io_service>();
     reqAddress_mtx_ = std::make_shared<boost::mutex>();
 }
@@ -116,6 +116,7 @@ inline void ArtnetThread::OpDmx(std::size_t size) {
     }
 
     dmxBucket->setData(buffer.begin() + 18, buffer.begin() + 18 + ((int) length));
+    serialUpdater->announceDataReady();
 }
 
 void ArtnetThread::OpPoll() {

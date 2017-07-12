@@ -11,6 +11,7 @@
 #include "ArtnetThread.h"
 #include "DMXBucket.h"
 #include "gui/DMXWindow.h"
+#include "SerialThread.h"
 #include <cstdio>
 #include <vector>
 #include <string>
@@ -55,22 +56,32 @@ int main(int, char **) {
     bool show_another_window = false;
     ImVec4 clear_color = ImColor(114, 144, 154);
 
+    // Initialise the logging window
     auto logWindow_p = std::make_shared<LogWindow>();
     LogWindow &logWindow = *logWindow_p;
     typedef boost::log::sinks::synchronous_sink<LoggingUtilities::GUISinkBackend> sink_t;
     boost::shared_ptr<sink_t> sink(new sink_t(logWindow_p));
     boost::log::core::get()->add_sink(sink);
 
+    // Initialise the DMX Bucket
     auto dmxBucket_p = std::make_shared<DMXBucket>();
     DMXBucket &dmxBucket = *dmxBucket_p;
 
-    SerialWindow serialWindow;
+    // Initialise the serial interface
+    auto serialInterface_p = std::make_shared<SerialInterface>();
+
+    // Initialise the serial and artnet windows
+    SerialWindow serialWindow(serialInterface_p);
     auto artnetWindow_p = std::make_shared<ArtnetWindow>();
     ArtnetWindow &artnetWindow = *artnetWindow_p;
     DMXWindow dmxWindow(dmxBucket);
 
-    ArtnetThread artnetThread(artnetWindow_p, dmxBucket_p);
-    boost::thread t(artnetThread);
+    // Initialise the serial and artnet threads
+    auto serialUpdater = std::make_shared<SerialThread::Updater>();
+    SerialThread serialThread(serialInterface_p, dmxBucket_p, serialUpdater);
+    ArtnetThread artnetThread(artnetWindow_p, dmxBucket_p, serialUpdater);
+    boost::thread t_1(artnetThread);
+    boost::thread t_2(serialThread);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
