@@ -5,20 +5,29 @@
 // 512 times for every DMX update
 extern volatile uint8_t dmxBuffer[DMX_SIZE];
 
+enum operation {
+  waiting,
+  dmx,
+  unknown
+};
+
 void setup() {
   Serial.begin(230400);
   Serial.print("r&c");
   DmxSimple.maxChannel(DMX_SIZE);
-  pinMode(13,OUTPUT);
-  digitalWrite(13,HIGH);
+  pinMode(13, OUTPUT); // error LED
   pinMode(4, OUTPUT); // debugging LED
   pinMode(3, OUTPUT); // output pin
   digitalWrite(4, LOW);
+  digitalWrite(13, LOW);
 }
 
+uint8_t code;
 uint8_t op;
 
-uint8_t channel;
+operation status;
+
+uint16_t channel = 0;
 uint16_t start;
 uint8_t length;
 uint8_t value;
@@ -29,47 +38,45 @@ void loop() {
   // Read operation
   while(!Serial.available());
   digitalWrite(4, HIGH);
-  op = Serial.read();
+  code = Serial.read();
+  Serial.print("Got code ");
+  Serial.println((int) code);
 
-  if ('f' == op) {
-    // Full 512-channel package
-    while(Serial.available() < 512);
-    Serial.readBytes((uint8_t*) dmxBuffer, 512);
-  } else if ('o' == op) {
-    // One channel (for testing purposes)
+  if (code == 125) {
+    // Operation code
     while(!Serial.available());
-    channel = Serial.read();
-    while(!Serial.available());
-    dmxBuffer[channel] = Serial.read();
-  } else if ('m' == op) {
-    // Many channels (at most 256)
-    while(Serial.available() < 3);
-    Serial.readBytes((uint8_t*) (&start), 2);
-    length = Serial.read();
-    if (start >= 512 || length + start >= 512) {
-      Serial.write('e'); // error
+    op = Serial.read();
+
+    Serial.print("Got oper ");
+    Serial.println((int) op);
+    
+    if (code == op) {
+      // pass the code to the next command
+    } else {
+      status = waiting;
+      if (op == 'f') {
+        // full dmx package
+        status = dmx;
+        channel = 0;
+      } else if (op == 'e') {
+        // reset error
+        digitalWrite(13, LOW);
+      } else {
+        // error
+        digitalWrite(13, HIGH);
+      }
       return;
     }
-    while (Serial.available() < length);
-    Serial.readBytes((uint8_t*) (dmxBuffer+start), length);
-  } else if ('p' == op) {
-    // Ping
-    Serial.write('p'); // pong
-  } 
-    // ===== LEAST COMMON OPERATIONS =====
-  else if ('r' == op) {
-    // Reset
-    for (start = 0; start != 512; ++start) {
-      dmxBuffer[start] = 0;
-    }
-  } else if ('a' == op) {
-    // All channels to value
-    while(!Serial.available());
-    value = Serial.read();
-    for (start = 0; start != 512; ++start) {
-      dmxBuffer[start] = value;
-    }
+  }
+  
+  if (status == dmx) {
+    Serial.print("Setting ");
+    Serial.print((int) channel);
+    Serial.print(" to ");
+    Serial.println((int) code);
+    dmxBuffer[channel++] = code;
   } else {
-    Serial.write('e'); // error
+    // error
+   digitalWrite(13, HIGH); 
   }
 }
