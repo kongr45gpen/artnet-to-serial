@@ -47,6 +47,8 @@ SerialInterface::SerialInterface() : stats(boost::chrono::milliseconds(500)) {
 }
 
 void SerialInterface::connect(std::string port, unsigned int baud_rate) {
+    this->baudRate = baud_rate;
+
     lock_guard<mutex> guard(mtx_);
     try {
         if (serial && serial->is_open()) {
@@ -54,7 +56,7 @@ void SerialInterface::connect(std::string port, unsigned int baud_rate) {
         }
         BOOST_LOG_TRIVIAL(debug) << "Opening serial interface " << port << " [" << baud_rate << ']';
 
-        io = std::shared_ptr<io_service>(new io_service);
+        io = std::make_shared<io_service>();
         serial = std::make_shared<serial_port>(*io, port);
         serial->set_option(serial_port_base::baud_rate(baud_rate));
     } catch (boost::system::system_error &e) {
@@ -63,7 +65,7 @@ void SerialInterface::connect(std::string port, unsigned int baud_rate) {
 }
 
 void SerialInterface::disconnect() {
-    lock_guard<mutex> guard(mtx_);
+    // No lock acquired, we assume the lock is already in place by the caller function
     if (serial && serial->is_open()) {
         BOOST_LOG_TRIVIAL(debug) << "Closing serial interface";
         try {
@@ -76,7 +78,21 @@ void SerialInterface::disconnect() {
 }
 
 void SerialInterface::test() {
-    // TODO: Implement this
+    // TODO: Improve
+    lock_guard<mutex> guard(mtx_);
+
+    std::ostringstream ss;
+    ss << opSignal << 'f' << '\0' << '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< 'a' << 'a' << 'a' << 'a' << 'a';
+    boost::asio::write(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()));
+}
+
+void SerialInterface::resetError() {
+    // TODO: Improve
+    lock_guard<mutex> guard(mtx_);
+
+    std::ostringstream ss;
+    ss << opSignal << 'e';
+    boost::asio::write(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()));
 }
 
 bool SerialInterface::testWorking(std::string device) {
@@ -102,10 +118,15 @@ void SerialInterface::write(const std::array<uint8_t, 512> &dmxValues) {
     BOOST_LOG_TRIVIAL(trace) << "Writing to serial port";
 
     std::ostringstream ss;
-    ss << 'f';
+    ss << opSignal << 'f';
 
     for (auto &val : dmxValues) {
         ss << val;
+        if (val == opSignal) {
+            // We're sending an operation code -- send it again so that the receiver understands it's just part of
+            // the data
+            ss << val;
+        }
     }
 
     try {
@@ -133,4 +154,5 @@ void SerialInterface::setLed(const shared_ptr<ActivityLED> &led) {
 
 DataStatistics &SerialInterface::getStats() {
     return stats;
+
 }

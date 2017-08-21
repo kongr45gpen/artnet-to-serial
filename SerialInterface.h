@@ -18,11 +18,16 @@ class SerialInterface {
 
     DataStatistics stats;
 
+    unsigned int baudRate = 0;
+
     /**
-     * Poll an interface too see if it's connected
+     * Poll an interface to see if it's connected
      * @param device
      */
     static bool testWorking(std::string device);
+
+    // The signal that defines an operation
+    const static uint8_t opSignal = 125;
 
     boost::mutex mtx_;
 public:
@@ -30,8 +35,11 @@ public:
     virtual ~SerialInterface();
 
     void setLed(const std::shared_ptr<ActivityLED> &led);
+    unsigned int getBaudRate() const {
+        return baudRate;
+    }
 
-    void connect(std::string port, unsigned int baud_rate = 230400);
+    void connect(std::string port, unsigned int baudRate = 230400);
     void disconnect();
 
     /**
@@ -41,6 +49,7 @@ public:
     void write(const std::array<uint8_t, 512> &dmxValues);
 
     void test();
+    void resetError();
     static std::vector<std::string> listInterfaces();
 
     DataStatistics &getStats();

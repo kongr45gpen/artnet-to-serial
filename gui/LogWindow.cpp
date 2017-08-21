@@ -11,9 +11,13 @@ LogWindow::LogWindow() : items(400) {
 
 void LogWindow::draw() {
     ImGui::SetNextWindowSize(ImVec2(520,600), ImGuiSetCond_FirstUseEver);
-    ImGui::Begin("Log");
+    if (!ImGui::Begin("Log")) {
+        ImGui::End();
+        return;
+    };
 
     // TODO: display items starting from the bottom
+
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0,0));
     static ImGuiTextFilter filter;

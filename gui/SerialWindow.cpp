@@ -29,6 +29,10 @@ void SerialWindow::draw() {
     if (ImGui::Button("Test")) {
         serialInterface->test();
     }
+    ImGui::SameLine();
+    if (ImGui::Button("Reset Error")) {
+        serialInterface->resetError();
+    }
     ImGui::SameLine(0, 300);
     sendingLED->draw();
 
@@ -44,7 +48,7 @@ void SerialWindow::draw() {
     }
     ImGui::SameLine(0, 50);
     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
-    ImGui::TextDisabled("baud rate: 230400");
+    ImGui::TextDisabled("baud rate: %d", serialInterface->getBaudRate());
 
     ImGui::Text("Data rate: %d bits/s", (int) (8 * serialInterface->getStats().getAverage()));
 

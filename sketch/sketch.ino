@@ -20,6 +20,11 @@ void setup() {
   pinMode(3, OUTPUT); // output pin
   digitalWrite(4, LOW);
   digitalWrite(13, LOW);
+
+  // RGB led strip pins
+  pinMode(9, OUTPUT);
+  pinMode(10,OUTPUT);
+  pinMode(11,OUTPUT);
 }
 
 uint8_t code;
@@ -39,16 +44,11 @@ void loop() {
   while(!Serial.available());
   digitalWrite(4, HIGH);
   code = Serial.read();
-  Serial.print("Got code ");
-  Serial.println((int) code);
 
   if (code == 125) {
     // Operation code
     while(!Serial.available());
     op = Serial.read();
-
-    Serial.print("Got oper ");
-    Serial.println((int) op);
     
     if (code == op) {
       // pass the code to the next command
@@ -70,11 +70,16 @@ void loop() {
   }
   
   if (status == dmx) {
-    Serial.print("Setting ");
-    Serial.print((int) channel);
-    Serial.print(" to ");
-    Serial.println((int) code);
+    if (channel == 0) {
+      analogWrite(9, code);
+    } else if (channel == 1) {
+      analogWrite(10, code);
+    } else if (channel == 2) {
+      analogWrite(11, code);
+    }
+    
     dmxBuffer[channel++] = code;
+    if (channel >= DMX_SIZE) channel = 0;
   } else {
     // error
    digitalWrite(13, HIGH); 
