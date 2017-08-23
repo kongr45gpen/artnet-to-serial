@@ -13,6 +13,7 @@
 
 #include <imgui.h>
 #include "imgui_impl_glfw.h"
+#include "config.h"
 
 // GLFW
 #include <GLFW/glfw3.h>
@@ -248,6 +249,7 @@ void ImGui_ImplGlfw_NewFrame()
         ImGui_ImplGlfw_CreateDeviceObjects();
 
     ImGuiIO& io = ImGui::GetIO();
+    //glfwSwapInterval(0); //vsync
 
     // Setup display size (every frame to accommodate for window resizing)
     int w, h;
@@ -259,7 +261,7 @@ void ImGui_ImplGlfw_NewFrame()
 
     // Setup time step
     double current_time =  glfwGetTime();
-    io.DeltaTime = g_Time > 0.0 ? (float)(current_time - g_Time) : (float)(1.0f/60.0f);
+    io.DeltaTime = g_Time > 0.0 ? (float)(current_time - g_Time) : (float)(1.0f/ARTSERIAL_FRAMERATE);
     g_Time = current_time;
 
     // Setup inputs
