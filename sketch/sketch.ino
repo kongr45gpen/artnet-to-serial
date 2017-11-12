@@ -74,7 +74,7 @@ void loop() {
   }
   
   if (status == dmx) {
-    if (channel >= 14) {
+    if (channel >= 512) {
       channel = 0;
       digitalWrite(4, HIGH);
     }
@@ -82,6 +82,7 @@ void loop() {
     float inter = code/255.0;
     inter = (exp(-a*inter)-1)/(exp(-a)-1);
     value = 4095*inter;
+    value = 4095-value;
 
     // DMX channels 7-12 are used to power PWM devices, e.g. a LED strip,
     // connected on the Arduino's "analog" output pins.
