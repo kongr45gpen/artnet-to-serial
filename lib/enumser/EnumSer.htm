@@ -1,0 +1,523 @@
+<html>
+
+<head>
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<title>CEnumerateSerial v1.33</title>
+<link href="./naughter.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<h2><img alt="CEnumerateSerial Logo" height="32" src="enumser.gif" width="32">CEnumerateSerial 
+v1.33</h2>
+<p>Welcome to CEnumerateSerial, A simple C++ class to enumerate the serial ports 
+installed on your machine.</p>
+<p>&nbsp;</p>
+<table>
+	<tr>
+		<td><a href="#Features">Features</a></td>
+	</tr>
+	<tr>
+		<td><a href="#Usage">Usage</a></td>
+	</tr>
+	<tr>
+		<td><a href="#Copyright">Copyright</a></td>
+	</tr>
+	<tr>
+		<td><a href="#History">History</a></td>
+	</tr>
+	<tr>
+		<td><a href="#APIReference">API Reference</a></td>
+	</tr>
+	<tr>
+		<td><a href="#Contact">Contacting the Author</a></td>
+	</tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2><a name="Features"></a>Features</h2>
+<ul>
+	<li>Simple C++ class interface.</li>
+	<li>The code is fully Unicode compliant and include Unicode built options in 
+	the workspace file.</li>
+	<li>Internally the code provides 9 different ways (yes you read that right: 
+	Nine) of enumerating serial ports: Using CreateFile, QueryDosDevice, GetDefaultCommConfig, 
+	two ways using the Setup API, EnumPorts, WMI, Com Database &amp; enumerating 
+	the values under the registry key HKEY_LOCAL_MACHINE\HARDWARE\DEVICEMAP\SERIALCOMM.</li>
+	<li>Can be compiled with or without MFC and or ATL support. If you do not want 
+	MFC support, then the code falls back to using the ATL CSimpleArray collection 
+	classes. The class also supports using standard STL collection classes. </li>
+	<li>All of the configuration of the code is controlled by the following preprocessor 
+	values: CENUMERATESERIAL_USE_STL, _AFX, NO_CENUMERATESERIAL_USING_CREATEFILE, 
+	NO_CENUMERATESERIAL_USING_QUERYDOSDEVICE, NO_CENUMERATESERIAL_USING_GETDEFAULTCOMMCONFIG, 
+	NO_CENUMERATESERIAL_USING_SETUPAPI1, NO_CENUMERATESERIAL_USING_SETUPAPI2, NO_CENUMERATESERIAL_USING_ENUMPORTS, 
+	NO_CENUMERATESERIAL_USING_WMI, NO_CENUMERATESERIAL_USING_COMDB &amp; NO_CENUMERATESERIAL_USING_REGISTRY.</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2><a name="Usage"></a>Usage</h2>
+<ul>
+	<li>The class is designed for VC 2010 or later. It will not compile on earlier 
+	releases of VC.</li>
+	<li>To use the functions in your code simply include enumser.cpp in your project 
+	and #include enumser.h in which ever of your modules needs to make calls to 
+	the function.</li>
+	<li>To see the class in action, have a look at the main function in the module &quot;main.cpp&quot;.</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2><a name="Copyright"></a>Copyright</h2>
+<ul>
+	<li>You are allowed to include the source code in any product (commercial, shareware, 
+	freeware or otherwise) when your product is released in binary form.</li>
+	<li>You are allowed to modify the source code in any way you want except you 
+	cannot modify the copyright details at the top of each module.</li>
+	<li>If you want to distribute source code with your application, then you are 
+	only allowed to distribute versions released by the author. This is to maintain 
+	a single distribution point for the source code.</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2><a name="History"></a>History</h2>
+<p><b>v1.33 (15 November 2017)</b></p>
+<ul>
+	<li>Updated the code to compile cleanly when _ATL_NO_AUTOMATIC_NAMESPACE is 
+	defined. </li>
+</ul>
+<p><b>v1.32 (25 September 2017)</b></p>
+<ul>
+	<li>Updated copyright details. </li>
+	<li>Replaced NULL throughout the codebase with nullptr. This means that the 
+	minimum requirement for the framework is now VC 2010. </li>
+	<li>Replaced CString::operator LPC*STR() calls throughout the codebase with 
+	CString::GetString calls </li>
+	<li>Removed the CENUMERATESERIAL_USE_STL define and instead introduced a new 
+	CENUMERATESERIAL_MFC_EXTENSIONS define which by default is not defined. </li>
+</ul>
+<p><b>v1.31 (2 July 2016)</b></p>
+<ul>
+	<li>Updated the SAL annotations in the code</li>
+</ul>
+<p><b>v1.30 (28 May 2016)</b></p>
+<ul>
+	<li>The sample app previously excluded support for CEnumerateSerial::UsingComDB 
+	for versions of Visual C 2010 or earlier. Now this check has been changed to 
+	be based on the version of the Windows SDK which the code is being compiled 
+	against. This check is now performed by checking the value of the VER_PRODUCTBUILD 
+	preprocessor value from the ntverp.h SDK header file. The sample app now excludes 
+	support for CEnumerateSerial::UsingComDB on the Windows SDK 7.1 or earlier. 
+	This is because the msports.h header file is only available with the Windows 
+	SDK 8 or later. Thanks to &quot;scott&quot; for reporting this issue. </li>
+</ul>
+<p><b>v1.29 (28 March 2016)</b></p>
+<ul>
+	<li>Updated copyright details. </li>
+	<li>Updated CEnumerateSerial::RegQueryValueString to ensure that non null terminated 
+	data returned from the registry API is null terminated before it is treated 
+	as such in the code. </li>
+	<li>Reworked CEnumerateSerial::UsingRegistry to internally use CEnumerateSerial::RegQueryValueString. 
+	This ensures that non null terminated data returned from the registry API is 
+	null terminated before it is treated as such in the code. </li>
+</ul>
+<p><b>v1.28 (20 December 2015)</b></p>
+<ul>
+	<li>Updated copyright details. </li>
+	<li>Updated the code to compile cleanly on VC 2015. </li>
+	<li>Reworked CEnumerateSerial::UsingComDB method to statically link to msports.dll.
+	</li>
+	<li>Reworked CEnumerateSerial::UsingSetupAPI1 method to statically link to setupapi.dll.
+	</li>
+	<li>Reworked CEnumerateSerial::UsingSetupAPI2 method to statically linke to 
+	setupapi.dll. </li>
+	<li>Removed now unnecessary CEnumerateSerial::LoadLibraryFromSystem32 method.
+	</li>
+	<li>Added SAL annotations to all the code. </li>
+	<li>Removed call to VerifyVersionInfo from CEnumerateSerial::UsingQueryDosDevice.
+	</li>
+	<li>CEnumerateSerial::UsingCreateFile now use ATL::CHandle instead of CAutoHandle.
+	</li>
+	<li>CEnumerateSerial::UsingQueryDosDevice now uses ATL::CHeapPtr instead of 
+	CAutoHeapAlloc. </li>
+	<li>CEnumerateSerial::UsingSetupAPI2 now uses ATL::CHeapPtr instead of CAutoHeapAlloc.
+	</li>
+	<li>CEnumerateSerial::UsingEnumPorts now uses ATL::CHeapPtr instead of CAutoHeapAlloc.
+	</li>
+	<li>CEnumerateSerial::UsingWMI now uses ATL::CW2A instead of CAutoHeapAlloc.
+	</li>
+	<li>CEnumerateSerial::UsingComDB now uses ATL::CHeapPtr instead of CAutoHeapAlloc.
+	</li>
+	<li>CEnumerateSerial::UsingWMI now uses ATL::CComPtr &amp; ATL::CComVariant.
+	</li>
+	<li>Removed AutoHandle.h, AutoHeapAlloc.h &amp; AutoHModule.h from distribution 
+	as these modules are no longer required by enumser. </li>
+	<li>CEnumerateSerial::UsingSetupAPI1 now uses ATL::CRegKey. </li>
+	<li>CEnumerateSerial::UsingSetupAPI2 now uses ATL::CRegKey. </li>
+	<li>CEnumerateSerial::UsingRegistry now uses ATL::CRegKey.</li>
+	<li>CEnumerateSerial::RegQueryValueString now uses ATL::CRegKey. </li>
+	<li>The return value from CEnumerateSerial::UsingWMI is now a HRESULT instead 
+	of a BOOL. </li>
+	<li>CEnumerateSerial::UsingEnumPorts now returns the friendly name of the port.
+	</li>
+	<li>Fixed an issue calling EnumPorts the first time in CEnumerateSerial::UsingEnumPorts.</li>
+	<li>Simplified the declaration of parameters to the various methods of the class.
+	</li>
+	<li>CEnumerateSerial::UsingSetupAPI1 and CEnumerateSerial::UsingSetupAPI2 have 
+	been refactored to use a new internal method called &quot;QueryUsingSetupAPI&quot;.
+	</li>
+	<li>CEnumerateSerial::UsingSetupAPI2 now uses GUID_DEVINTERFACE_SERENUM_BUS_ENUMERATOR 
+	define.</li>
+	<li>Renamed all the NO_ENUMSERIAL_* defines to NO_CENUMERATESERIAL_*.</li>
+</ul>
+<p><b>v1.27 (1 December 2013)</b></p>
+<ul>
+	<li>Updated the code to compile cleanly on VC 2013 </li>
+</ul>
+<p><b>v1.26 (3 August 2013)</b></p>
+<ul>
+	<li>Fixed a bug where the return value from &quot;SetupDiOpenDevRegKey&quot; 
+	in UsingSetupAPI1 and UsingSetupAPI2 were not being checked correctly. Thanks 
+	to Ilya Tsybulsky for reporting this bug.</li>
+	<li>Tested code to make sure everything compiles cleanly when CENUMERATESERIAL_USE_STL 
+	is not defined and MFC is not included. Please note that if you do not use STL 
+	or MFC then you MUST use ATL.</li>
+	<li>Updated code to make sure everything compiles cleanly when CENUMERATESERIAL_USE_STL 
+	is defined and MFC and ATL are not included. This means that this particular 
+	scenario should now work on Express SKU&#39;s of Visual Studio. </li>
+	<li>Reworked the CEnumerateSerial::UsingWMI method to not require ATL. This 
+	means that this method should now work on Express SKU&#39;s of Visual Studio.&nbsp;
+	</li>
+</ul>
+<p><b>v1.25 (28 July 2013)</b></p>
+<ul>
+	<li>Did some very light cleanup of the code to reduce dependencies when #defining 
+	out parts of the code. Thanks to Jay Beavers for providing this update. </li>
+</ul>
+<p><b>v1.24 (10 January 2013)</b></p>
+<ul>
+	<li>Updated copyright details </li>
+	<li>Spun off CAutoHModule class into its own header file </li>
+	<li>Spun off CAutoHandle class into its own header file </li>
+	<li>Addition of a new CAutoHeapAlloc class which encapsulates HeapAlloc / HeapFree 
+	calls in a C++ class. </li>
+	<li>Removed ATL usage completely from UsingQueryDevice, UsingSetupAPI2 and UsingEnumPorts. 
+	This should allow these methods to support compilers which do not have support 
+	for ATL such as VC Express SKUs.&nbsp; </li>
+</ul>
+<p><b>v1.23 (15 October 2012)</b></p>
+<ul>
+	<li>Updated copyright details. </li>
+	<li>Code no longer uses LoadLibrary without an absolute path when loading SETUPAPI 
+	and MSPORTS dlls. This avoids DLL planting security issues. </li>
+	<li>Added a new internal CAutoHandle and CAutoHModule classes which makes the 
+	implementation for CEnumerateSerial simpler </li>
+	<li>Code now uses an internal RegQueryValueString method to ensure that data 
+	returned from raw Win32 API call RegQueryValueEx is null terminated before it 
+	is treated as such in the code. Thanks to Jeffrey Walton for reporting this 
+	security issue. </li>
+	<li>Updated the code to clean compile on VC 2012 </li>
+</ul>
+<p><b>v1.22 (28 March 2011)</b></p>
+<ul>
+	<li>Updated copyright details. </li>
+	<li>Updated the UsingComDB method to fix an off by one issue. This resulting 
+	in the list of ports this function reported being incorrect. Thanks to &quot;Jar, 
+	Min, Jeong&quot; for reporting this issue. </li>
+	<li>Updated sample app to compile cleanly on VC 2010 </li>
+</ul>
+<p><b>v1.21 (27 March 2010)</b></p>
+<ul>
+	<li>Updated copyright details.</li>
+	<li>Code can now optionally use STL instead of MFC or ATL in the API. To use 
+	STL containers instead of MFC or ATL versions, please define CENUMERATESERIAL_USE_STL 
+	before you include enumser in your project. Please note that the code still 
+	internally uses ATL in the UsingWMI method, but the other functions do not. 
+	This means that the class should now be partly compilable on VC Express (2005, 
+	2008 or 2010) as none of these have support for ATL or MFC. I do not personally 
+	have VC Express installed so people&#39;s feedback on this would be appreciated. 
+	Thanks to Bill Adair for providing this update.&nbsp; </li>
+</ul>
+<p><b>v1.20 (30 April 2009)</b></p>
+<ul>
+	<li>Updated copyright details.</li>
+	<li>Updated the sample app&#39;s project settings to more modern default values.</li>
+	<li>Updated the sample app to log the time taken for the various methods.</li>
+</ul>
+<p><b>v1.19 (29 November 2008)</b></p>
+<ul>
+	<li>Addition of a ninth and hopefully final method to enumerate serial ports. 
+	The function is called &quot;UsingRegistry&quot; and enumerates the ports by 
+	examining the registry location at HKEY_LOCAL_MACHINE\HARDWARE\DEVICEMAP\SERIALCOMM. 
+	Thanks to Martin Oberhuber for prompting this update.</li>
+	<li>Fixed a bug where the last error value was not being preserved in CEnumerateSerial::UsingComDB.</li>
+</ul>
+<p><b>v1.18 (23 November 2008)</b></p>
+<ul>
+	<li>Updated code to compile correctly using _ATL_CSTRING_EXPLICIT_CONSTRUCTORS 
+	define</li>
+	<li>The code now only supports VC 2005 or later. </li>
+	<li>Code now compiles cleanly using Code Analysis (/analyze)</li>
+	<li>Yes, Addition of a another method called &quot;UsingComDB&quot; to enumerate 
+	serial ports!. This function uses the so called &quot;COM Database&quot; functions 
+	which are part of the Windows DDK which device drivers can use to support claiming 
+	an unused port number when the device driver is being installed. Please note 
+	that the list returning from this function will only report used port numbers. 
+	The device may or may not be actually present, just that the associated port 
+	number is currently &quot;claimed&quot;. Thanks to Dmitry Nikitin for prompting 
+	this very nice addition. The code now supports a total of 8 different ways to 
+	enumerate serial ports!</li>
+</ul>
+<p><b>v1.17 (20 March 2008)</b></p>
+<ul>
+	<li>Updated copyright details</li>
+	<li>Updates to preprocessor logic to correctly include UsingSetupAPI1 and UsingSetupAPI2 
+	functionality</li>
+	<li>Updated sample app to clean compile on VC 2008</li>
+</ul>
+<p><b>v1.16 (5 July 2007)</b></p>
+<ul>
+	<li>Updated the code to work if the code does not include MFC. In this case, 
+	CPortsArray parameters becomes the ATL class CSimpleArray&lt;UINT&gt; and CNamesArray 
+	parameters become the ATL class CSimpleArray&lt;CString&gt;. Please note that 
+	this support requires a recentish copy of Visual Studio and will not support 
+	Visual C++ 6.0 as the code makes use of the ATL CString class. Thanks to Michael 
+	Venus for prompting this update.</li>
+	<li>CEnumerateSerial::UsingWMI method now uses ATL smart pointers to improve 
+	robustness of the code.</li>
+</ul>
+<p><b>v1.15 (9 June 2007)</b></p>
+<ul>
+	<li>Following feedback from John Miles, it looks like my previous change of 
+	the 29 January 2007 to use GUID_DEVINTERFACE_COMPORT in the UsingSetupAPI method 
+	had the unintended consequence of causing this method not to work on any versions 
+	of Windows prior to Windows 2000. What I have now done is reinstate the old 
+	mechanism using the name UsingSetupAPI2 so that you can continue to use this 
+	approach if you need to support NT 4 and Windows 9x. The new approach of using 
+	GUID_DEVINTERFACE_COMPORT has been renamed to UsingSetupAPI1.</li>
+</ul>
+<p><b>v1.14 (29 January 2007)</b></p>
+<ul>
+	<li>Updated copyright details.</li>
+	<li>UsingSetupAPI code now uses the GUID_DEVINTERFACE_COMPORT guid to enumerate 
+	COM ports. Thanks to David McMinn for reporting this nice addition.</li>
+	<li>Detection code which uses CreateFile call, now treats the error code of 
+	ERROR_SEM_TIMEOUT as indication that a port is present.</li>
+</ul>
+<p><b>v1.13 (8 November 2006)</b></p>
+<ul>
+	<li>Extended CEnumerateSerial::UsingWMI to now also return the friendly name 
+	of the port. Thanks to Giovanni Bajo for providing this update.</li>
+	<li>Fixed a bug where CEnumerateSerial::UsingSetupAPI forget to empty out the 
+	Friendly name array on start.</li>
+	<li>VariantInit is now called for the 2 VARIANT structs used in the UsingWMI 
+	method code.</li>
+</ul>
+<p><b>v1.12 (9 July 2006)</b></p>
+<ul>
+	<li>Updated copyright details.</li>
+	<li>Addition of a CENUMERATESERIAL_EXT_CLASS macro to allow the code to be easily 
+	added to an extension dll</li>
+	<li>Code now uses newer C++ style casts instead of C style casts.</li>
+	<li>Updated the code to clean compile on VC 2005.</li>
+	<li>Updated the documentation to use the same style as the web site.</li>
+</ul>
+<p><b>v1.11 (13 May 2004)</b></p>
+<ul>
+	<li>Extended CEnumerateSerial::UsingSetupAPI to now also return the friendly 
+	name of the port. Thanks to Jay C. Howard for prompting this update.</li>
+</ul>
+<p><b>v1.10 (12 December 2003)</b></p>
+<ul>
+	<li>Updated the sample app to VC 6. </li>
+	<li>Addition of a &quot;EnumerateSerialPorts6&quot; (See Note 4 below) which 
+	uses WMI. </li>
+	<li>You can now optionally exclude each function using preprocessor defines 
+	of the form &quot;NO_ENUMSERIAL_USING_XYX&quot;. </li>
+	<li>Made the functions members of a C++ class and renamed them to using more 
+	meaningful names </li>
+</ul>
+<p><b>v1.09 (20 September 2003)</b></p>
+<ul>
+	<li>Addition of a &quot;EnumerateSerialPorts5&quot; method. This method (hopefully 
+	the last method!) uses EnumPorts and was provided by Andi Martin. </li>
+</ul>
+<p><b>v1.08 (22 May 2003)</b></p>
+<ul>
+	<li>Updated copyright details. </li>
+	<li>Addition of a EnumerateSerialPorts4 which uses Device Manager API </li>
+</ul>
+<p><b>v1.07 (13 August 2001)</b></p>
+<ul>
+	<li>Made the code in IsNumeric more robust when sent an empty string </li>
+	<li>Optimized the code in EnumerateSerialPorts2 somewhat. Thanks to Dennis Lim 
+	for these suggestions. </li>
+</ul>
+<p><b>v1.06 (11 August 2001)</b></p>
+<ul>
+	<li>Made code path which uses QueryDosDevice more robust by checking to make 
+	sure the device name is of the form &quot;COMxyz..&quot; where xyz are numeric.
+	</li>
+</ul>
+<p><b>v1.05 (25 June 2001)</b></p>
+<ul>
+	<li>Guess what, You now have the choice of using the GetDefaultCommConfig thro 
+	the use of three versions of the function. You take your pick. </li>
+	<li>Fixed problem where port fails to be reported thro the CreateFile mechanism 
+	when the error code is ERROR_SHARING_VIOLATION i.e. someone has the port already 
+	open. </li>
+</ul>
+<p><b>v1.04 (29 March 2001)</b></p>
+<ul>
+	<li>Reverted code to use CreateFile or QueryDosDevice as it is much faster than 
+	using the GetDefaultCommConfig method.</li>
+	<li>Updated copyright message.</li>
+</ul>
+<p><b>v1.03 (17 May 2000)</b></p>
+<ul>
+	<li>Code now uses GetDefaultCommConfig in all cases to detect the ports.</li>
+</ul>
+<p><b>v1.02 (12 December 1999)</b></p>
+<ul>
+	<li>Fixed a problem in the Win9x code path when trying to detect deactivated 
+	IRDA-ports. When trying to open those, you will get the error-code ERROR_GEN_FAILURE.
+	</li>
+</ul>
+<p><b>v1.01 (23 February 1999)</b></p>
+<ul>
+	<li>Code now uses QueryDosDevice if running on NT to determine which serial 
+	ports are available. This avoids having to open the ports at all. It should 
+	operate a lot faster in addition.</li>
+</ul>
+<p><b>v1.0 (3 November 1998)</b></p>
+<ul>
+	<li>Initial public release.</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p class="crt"><a name="APIReference"></a><b>API Reference</b></p>
+<p><b>CEnumerateSerial::UsingCreateFile</b></p>
+<p><b>BOOL CEnumerateSerial::UsingCreateFile(CPortsArray&amp; ports);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the port numbers of all the 
+serial ports installed on the computer</p>
+<p><b>Remarks</b></p>
+<p>This function uses the CreateFile method of detecting serial ports. This will 
+work on all Win32 OS&#39;es, but requires actually opening the port.</p>
+<p>&nbsp;</p>
+<p><b>CEnumerateSerial::UsingQueryDosDevice</b></p>
+<p><b>BOOL CEnumerateSerial::UsingQueryDosDevice(CPortsArray&amp; ports);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the port numbers of all the 
+serial ports installed on the computer</p>
+<p><b>Remarks</b></p>
+<p>This function uses the QueryDosDevice method of detect serial ports. Please note 
+that this only works correctly on NT 3.x or later and not Windows 9x.</p>
+<p>&nbsp;</p>
+<p><b>CEnumerateSerial::UsingGetDefaultCommConfig</b></p>
+<p><b>BOOL CEnumerateSerial::UsingGetDefaultCommConfig(CPortsArray&amp;&nbsp;ports);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the port numbers of all the 
+serial ports installed on the computer</p>
+<p><b>Remarks</b></p>
+<p>This function uses the GetDefaultCommConfig method of detect serial ports. Please 
+note that this is the most compatible way of detecting serial ports and will work 
+on all Win32 OS'es from Windows 95 onwards but also happens to be the slowest.</p>
+<p>&nbsp;</p>
+<p><b>CEnumerateSerial::UsingSetupAPI1</b></p>
+<p><b>BOOL CEnumerateSerial::UsingSetupAPI1(CPortsArray&amp; ports, CNamesArray&amp; 
+friendlyNames);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the port numbers of all the 
+serial ports installed on the computer</p>
+<p><i>friendlyNames</i> Upon return this array will contain the Friendly names as 
+appears in the Device Manager corresponding to the serial ports returned in <i>&quot;ports&quot;</i>.</p>
+<p><b>Remarks</b></p>
+<p>This function uses the Device Manager &quot;SetupDi..&quot; APIs and the value 
+GUID_DEVINTERFACE_COMPORT device interface class to detect serial ports. Please 
+note that this will only work on Windows 2000 or later.</p>
+<p>&nbsp;</p>
+<p><b>CEnumerateSerial::UsingSetupAPI2</b></p>
+<p><b>BOOL CEnumerateSerial::UsingSetupAPI2(CPortsArray&amp;&nbsp;ports, CNamesArray&amp; 
+friendlyNames);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the port numbers of all the 
+serial ports installed on the computer</p>
+<p><i>friendlyNames</i> Upon return this array will contain the Friendly names as 
+appears in the Device Manager corresponding to the serial ports returned in <i>&quot;ports&quot;</i>.</p>
+<p><b>Remarks</b></p>
+<p>This function uses the Device Manager &quot;SetupDi..&quot; APIs and the &quot;Ports&quot; 
+device information set to detect serial ports. The code of course implements logic 
+to exclude parallel ports from the returned array as they are included in the &quot;Ports&quot; 
+device information set in addition to serial ports. This approach will work on all 
+Win32 OS'es from Windows 95 onwards.</p>
+<p>&nbsp;</p>
+<p><b>CEnumerateSerial::UsingEnumPorts</b></p>
+<p><b>BOOL CEnumerateSerial::UsingEnumPorts(CPortsArray&amp; ports, CNamesArray&amp; 
+friendlyNames);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the port numbers of all the 
+serial ports installed on the computer</p>
+<p><i>friendlyNames</i> Upon return this array will contain the Friendly names for 
+each port as returned using EnumPorts.</p>
+<p><b>Remarks</b></p>
+<p>This function uses the Win32 SDK call &quot;EnumPorts&quot;&nbsp; APIs to detect 
+serial ports. This will work on all Win32 OS'es from Windows 95 onwards.</p>
+<p>&nbsp;</p>
+<p><b>CEnumerateSerial::UsingWMI</b></p>
+<p><b>BOOL CEnumerateSerial::UsingWMI(CPortsArray&amp;&nbsp; ports, CNamesArray&amp; 
+friendlyNames);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the port numbers of all the 
+serial ports installed on the computer</p>
+<p><i>friendlyNames</i> Upon return this array will contain the Friendly names as 
+reported using WMI corresponding to the serial ports returned in <i>&quot;ports&quot;</i>.</p>
+<p><b>Remarks</b></p>
+<p>This function uses the WMI COM interfaces to detect serial ports. This will only 
+work on Windows NT 4 SP4 or later (i.e versions of Windows on which WMI is available).</p>
+<p>&nbsp;</p>
+<p><b>CEnumerateSerial::UsingComDB</b></p>
+<p><b>BOOL CEnumerateSerial::UsingComDB(CPortsArray&amp; ports);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the port numbers of all the 
+serial ports installed on the computer</p>
+<p><b>Remarks</b></p>
+<p>This function uses the uses the so called &quot;COM Database&quot; functions 
+which are part of the Windows DDK which device drivers can use to support claiming 
+an unused port number when the device driver is being installed. Please note that 
+the list returning from this function will only report used port numbers. The device 
+may or may not be actually present, just that the associated port number is currently &quot;claimed&quot;. 
+This will only work on Windows 2000 or later. A final note is that the ComDB functions 
+require UAC elevation if UAC is enabled.</p>
+<p>&nbsp;</p>
+<p><b>CEnumerateSerial::UsingRegistry</b></p>
+<p><b>BOOL CEnumerateSerial::UsingRegistry(CNamesArray&amp; ports);</b></p>
+<p><b>Parameters</b></p>
+<p><em>ports</em> Upon return this array will contain the names of all the serial 
+ports installed on the computer</p>
+<p><b>Remarks</b></p>
+<p>This function detects the install ports by enumerating the values contained at 
+the registry key HKEY_LOCAL_MACHINE\HARDWARE\DEVICEMAP\SERIALCOMM. This is the same 
+registry location as used by the .NET method SerialPort<span class="cpp">::</span>GetPortNames. 
+It also seems to be the way which HyperTerminal uses to enumerate the ports which 
+it offers in its connect dialog. This method has the advantage that it returns serial 
+ports which do not adhere to the &quot;COMX&quot; naming convention. For example 
+if you use the com0com driver from <a href="http://com0com.sourceforge.net/">http://com0com.sourceforge.net/</a>, 
+you will see the &quot;CNC0A&quot; and &quot;CNC0B&quot; ports which it creates 
+by default being returned from &quot;UsingRegistry&quot;. This method will work 
+on all versions of Windows from Windows 98 onwards.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2><a name="Contact"></a>Contacting the Author</h2>
+<p>PJ Naughter<br>Email: <a href="mailto:pjna@naughter.com">pjna@naughter.com</a><br>
+Web: <a href="http://www.naughter.com">http://www.naughter.com</a><br>15 
+November 
+2017</p>
+
+</body>
+
+</html>
