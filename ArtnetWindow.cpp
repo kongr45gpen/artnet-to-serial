@@ -8,7 +8,7 @@
 using boost::lock_guard;
 using boost::mutex;
 
-ArtnetWindow::ArtnetWindow() : receivingLED({0.2, 1.0, 0, 0.7}, boost::chrono::milliseconds(50), "Receiving") {
+ArtnetWindow::ArtnetWindow() : receivingLED({0.2f, 1.0f, 0, 0.7f}, boost::chrono::milliseconds(50), "Receiving") {
     controllers.insert("127.0.0.1");
 }
 
@@ -38,7 +38,7 @@ void ArtnetWindow::draw() {
     auto oldSelection = getSelection();
     bool selected;
 
-    ImGui::PushStyleColor(ImGuiCol_Text, {1.0, 0.78, 0.58, 1.0});
+    ImGui::PushStyleColor(ImGuiCol_Text, {1.0f, 0.78f, 0.58f, 1.0f});
     if (ImGui::Selectable("Any\n ", &anySelected) && !anySelected) {
         anySelected = true; // don't allow deselecting
     }

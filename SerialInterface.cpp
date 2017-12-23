@@ -11,7 +11,9 @@
 #include <boost/thread/lock_guard.hpp>
 #include <boost/thread/mutex.hpp>
 
-using namespace std;
+using std::vector;
+using std::string;
+using std::shared_ptr;
 using namespace boost::filesystem;
 using namespace boost::asio;
 using boost::lock_guard;
