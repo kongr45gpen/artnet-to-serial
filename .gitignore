@@ -32,7 +32,7 @@
 *.app
 
 # ImGui
-/imgui.ini
+imgui.ini
 
 # CMake
 CMakeCache.txt
@@ -48,3 +48,32 @@ CTestTestfile.cmake
 # IDE files
 .idea
 cmake-build-debug
+
+# Microsoft Visual Studio
+*.tlog
+*.idb
+*.pdb
+*.suo
+*.lib
+*.user
+*.log
+*.cache
+*.sdf
+*.sbr
+*.lastbuildstate
+*.opensdf
+*.bsc
+*.unsuccessfulbuild
+*.ilk
+*.exp
+*.rc
+*.res
+*.manifest
+*.ipch
+*.VC.db
+*.opendb
+/MSVC/Release
+/MSVC/Debug
+/MSVC/x64
+*.vs
+

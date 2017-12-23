@@ -41,7 +41,7 @@ void LogWindow::draw() {
 
     ImGui::Separator();
 
-    ImGui::BeginChild("ScrollingRegion", ImVec2(0,-ImGui::GetItemsLineHeightWithSpacing()), false, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("ScrollingRegion", ImVec2(0,-ImGui::GetFrameHeightWithSpacing()), false, ImGuiWindowFlags_HorizontalScrollbar);
 //    if (ImGui::BeginPopupContextWindow())
 //    {
 //        if (ImGui::Selectable("Clear")) {}
