@@ -179,8 +179,7 @@ int main(int, char**)
 	//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 	//IM_ASSERT(font != NULL);
 
-	bool show_test_window = true;
-	bool show_another_window = false;
+	bool show_test_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	// Initialise the logging window
@@ -235,16 +234,7 @@ int main(int, char**)
 			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 			ImGui::ColorEdit3("clear color", (float*)&clear_color);
 			if (ImGui::Button("Test Window")) show_test_window ^= 1;
-			if (ImGui::Button("Another Window")) show_another_window ^= 1;
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		}
-
-		// 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name the window.
-		if (show_another_window)
-		{
-			ImGui::Begin("Another Window", &show_another_window);
-			ImGui::Text("Hello from another window!");
-			ImGui::End();
 		}
 
 		// 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow().
