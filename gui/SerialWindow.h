@@ -9,7 +9,7 @@
 
 class SerialWindow {
     std::string ifaces;
-    std::vector<std::string> devices;
+    std::vector<std::pair<std::string, std::string> > devices;
 
     std::shared_ptr<SerialInterface> serialInterface;
     std::shared_ptr<ActivityLED> sendingLED;

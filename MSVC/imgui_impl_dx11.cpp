@@ -14,6 +14,10 @@
 #include <d3dcompiler.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
+#include <Windows.h>
+#include <windowsx.h>
+#pragma comment (lib, "d3d9.lib")
+#pragma comment (lib, "d3dx9.lib")
 
 // Data
 static INT64                    g_Time = 0;

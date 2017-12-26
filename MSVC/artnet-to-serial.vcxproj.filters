@@ -16,6 +16,9 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{e4d426d7-f2db-49fd-9e41-30f402bfc19a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="References">
+      <UniqueIdentifier>{6029f7ec-201e-4083-875c-2e9c836d6d5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ArtnetThread.cpp">
@@ -68,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="..\gui\SerialWindow.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\enumser\enumser.cpp">
+      <Filter>References</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

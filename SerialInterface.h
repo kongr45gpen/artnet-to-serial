@@ -13,6 +13,7 @@
 class SerialInterface {
     std::shared_ptr<boost::asio::io_service> io;
     std::shared_ptr<boost::asio::serial_port> serial;
+	std::atomic_bool connected = false; // Used just for the indicator, might not be trustworthy
 
     std::shared_ptr<ActivityLED> led;
 
@@ -41,6 +42,9 @@ public:
 
     void connect(std::string port, unsigned int baudRate = 230400);
     void disconnect();
+	bool isConnected() const {
+		return connected;
+	};
 
     /**
      * Send DMX output to the serial interface
@@ -50,7 +54,7 @@ public:
 
     void test();
     void resetError();
-    static std::vector<std::string> listInterfaces();
+    static std::vector<std::pair<std::string, std::string> > listInterfaces();
 
     DataStatistics &getStats();
 };
