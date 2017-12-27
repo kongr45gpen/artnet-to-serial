@@ -49,7 +49,7 @@
 
 #include "Tlc5940.h"
 
-void setup()
+void setups()
 {
   /* Call Tlc.init() to setup the tlc.
      You can optionally pass an initial PWM value (0 - 4095) for all channels.*/
@@ -70,7 +70,7 @@ float lag = 0.4;
 
 float a = 3;
 
-void loop()
+void loops()
 {
   int direction = 1;
 
