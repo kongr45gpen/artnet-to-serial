@@ -88,7 +88,8 @@ uint16_t start;
 uint8_t length;
 uint16_t value;
 
-float a = 7;
+float a_tlc = 7;
+float a_dmx = 3;
 
 void loop() {
   digitalWrite(31, LOW);
@@ -129,10 +130,12 @@ void loop() {
       digitalWrite(32, HIGH);
     }
 
-    DmxSimple.write(channel + 1, code);
+    float origin = code/255.0;
 
-    float inter = code/255.0;
-    inter = (exp(a*inter)-1)/(exp(a)-1);
+    float inter = (exp(a_dmx*origin)-1)/(exp(a_dmx)-1);
+    DmxSimple.write(channel + 1, 255*inter);
+
+    inter = (exp(a_tlc*origin)-1)/(exp(a_tlc)-1);
     value = 4095*inter;
     value = 4095-value;
 
