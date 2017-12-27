@@ -6,6 +6,7 @@
 #include <memory>
 #include <boost/log/trivial.hpp>
 #include <iomanip>
+#include <utility>
 
 #include "DMXBucket.h"
 #include <boost/thread/lock_guard.hpp>
@@ -61,8 +62,8 @@ vector<std::pair<string, string> > SerialInterface::listInterfaces() {
 				}
 
 				ifaces.push_back(std::make_pair<string,string>(
-					itr->path().string(),
-					itr->path().leaf().string()
+					itr->path().string().c_str(),
+					itr->path().leaf().string().c_str()
 				));
 			}
 		}
@@ -76,7 +77,7 @@ vector<std::pair<string, string> > SerialInterface::listInterfaces() {
 }
 
 SerialInterface::SerialInterface() : stats(boost::chrono::milliseconds(500)) {
-
+    connected = false;
 }
 
 void SerialInterface::connect(std::string port, unsigned int baud_rate) {

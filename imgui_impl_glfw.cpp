@@ -249,7 +249,7 @@ void ImGui_ImplGlfw_NewFrame()
         ImGui_ImplGlfw_CreateDeviceObjects();
 
     ImGuiIO& io = ImGui::GetIO();
-    //glfwSwapInterval(0); //vsync
+    glfwSwapInterval(1); //vsync
 
     // Setup display size (every frame to accommodate for window resizing)
     int w, h;

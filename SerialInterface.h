@@ -13,7 +13,7 @@
 class SerialInterface {
     std::shared_ptr<boost::asio::io_service> io;
     std::shared_ptr<boost::asio::serial_port> serial;
-	std::atomic_bool connected = false; // Used just for the indicator, might not be trustworthy
+    std::atomic_bool connected; // Used just for the indicator, might not be trustworthy
 
     std::shared_ptr<ActivityLED> led;
 

@@ -60,8 +60,8 @@ int main(int, char **) {
     auto logWindow_p = std::make_shared<LogWindow>();
     LogWindow &logWindow = *logWindow_p;
     typedef boost::log::sinks::synchronous_sink<LoggingUtilities::GUISinkBackend> sink_t;
-    boost::shared_ptr<sink_t> sink(new sink_t(logWindow_p));
-    boost::log::core::get()->add_sink(sink);
+//    boost::shared_ptr<sink_t> sink(new sink_t(logWindow_p));
+//    boost::log::core::get()->add_sink(sink);
 
     // Initialise the DMX Bucket
     auto dmxBucket_p = std::make_shared<DMXBucket>();

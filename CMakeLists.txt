@@ -17,6 +17,9 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 include_directories ("${PROJECT_SOURCE_DIR}/lib/imgui")
 add_subdirectory (lib)
 
+#add_executable(demo demo.cpp SerialInterface.cpp)
+#target_link_libraries ( demo ${Boost_LIBRARIES} pthread)
+
 add_executable(ArtnetToSerial
         imgui_impl_glfw.cpp
         artnetToSerial.cpp
@@ -34,9 +37,6 @@ add_executable(ArtnetToSerial
 target_link_libraries (ArtnetToSerial ImGui ImGuiDemo glfw GL)
 target_link_libraries (ArtnetToSerial glfw GL)
 target_link_libraries (ArtnetToSerial ${Boost_LIBRARIES} pthread)
-
-add_executable(demo demo.cpp SerialInterface.cpp)
-target_link_libraries ( demo ${Boost_LIBRARIES} pthread)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 #set(CMAKE_CXX_FLAGS "-O3")
