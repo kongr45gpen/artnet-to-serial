@@ -13,9 +13,12 @@ public:
     template<class InputIt> void setData (const InputIt &first, const InputIt &last) {
         boost::lock_guard<boost::mutex> guard(data_mtx_);
         std::copy(first, last, data.begin());
-    };
-
+    }
     std::array<uint8_t, 512> getData();
+
+	void clearData();
+	void setOneChannel(int channel, uint8_t value);
+	void setRandomData();
 
     DMXBucket();
 };

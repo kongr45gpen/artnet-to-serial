@@ -5,6 +5,9 @@
 
 class DMXWindow {
     DMXBucket &dmxBucket;
+
+	int selectedChannel = 0;
+	int selectedChannelValueSlider = 0;
 public:
     void draw();
 
