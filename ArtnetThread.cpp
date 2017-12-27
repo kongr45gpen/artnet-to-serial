@@ -70,6 +70,11 @@ void ArtnetThread::handleReceive(const boost::system::error_code &error,
                 BOOST_LOG_TRIVIAL(trace) << "Received OpPoll Art-Net packet (" << size << " bytes)"
                                          << " from " << remoteEndpoint.address();
                 OpPoll();
+            } else if (buffer[9] == 0x21 && buffer[8] == 0x00) {
+                // OpPollReply
+                BOOST_LOG_TRIVIAL(trace) << "Received OpPollReply Art-Net packet (" << size << " bytes)"
+                                         << " from " << remoteEndpoint.address();
+                OpPollReply(size);
             } else if (buffer[9] == 0x50 && buffer[8] == 0x00) {
                 // OpDmx
                 BOOST_LOG_TRIVIAL(trace) << "Received OpDmx  Art-Net packet (" << size << " bytes)";
@@ -88,6 +93,18 @@ void ArtnetThread::handleReceive(const boost::system::error_code &error,
     }
 
     startReceive();
+}
+
+inline void ArtnetThread::OpPollReply(std::size_t size) {
+    auto shortName = static_cast<char*>(buffer.begin() + 26);
+    auto longName = static_cast<char*>(buffer.begin() + 44);
+
+    // Make sure we don't go to bad memory areas if an invalid package is received
+    shortName[17] = longName[63] = '\0';
+
+    BOOST_LOG_TRIVIAL(trace) << "OpPollReply descriptions: [" << shortName << "] " << longName;
+
+    artnetWindow->pushControllerDescription(remoteEndpoint.address().to_string(), longName);
 }
 
 inline void ArtnetThread::OpDmx(std::size_t size) {

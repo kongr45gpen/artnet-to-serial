@@ -1,6 +1,7 @@
 #include "DMXWindow.h"
 #include <imgui.h>
 #include <iomanip>
+#include <boost/log/trivial.hpp>
 
 void DMXWindow::draw() {
     ImGui::SetNextWindowSize(ImVec2(520, 800), ImGuiSetCond_FirstUseEver);
@@ -71,30 +72,48 @@ void DMXWindow::draw() {
 	if (ImGui::Button("Randomise")) {
 		dmxBucket.setRandomData();
 	}
+    if (ImGui::Button("Force Update")) {
+        if (serialUpdater) {
+            serialUpdater->announceDataReady();
+        }
+    }
 	
 	ImGui::NextColumn();
 	ImGui::Text("Selected: Channel %d", selectedChannel + 1);
 	ImGui::Text("Value: %3d  (%3d%%)", data[selectedChannel], (100*data[selectedChannel])/255 );
 
+    bool updated = false;
 	ImGui::NextColumn();
 	ImGui::PushItemWidth(100);
-	ImGui::SliderInt("", &selectedChannelValueSlider, 0, 255);
+	if (ImGui::SliderInt("", &selectedChannelValueSlider, 0, 255)) {
+        updated = true;
+    }
 	ImGui::SameLine();
 	if (ImGui::Button("Set")) {
-		dmxBucket.setOneChannel(selectedChannel, static_cast<uint8_t>(selectedChannelValueSlider));
+        updated = true;
 	}
-
 	if (ImGui::Button("Off")) {
-		dmxBucket.setOneChannel(selectedChannel, static_cast<uint8_t>(selectedChannelValueSlider = 0));
+		selectedChannelValueSlider = 0;
+        updated = true;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("1/2")) {
-		dmxBucket.setOneChannel(selectedChannel, static_cast<uint8_t>(selectedChannelValueSlider = 127));
+		selectedChannelValueSlider = 127;
+        updated = true;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Full")) {
-		dmxBucket.setOneChannel(selectedChannel, static_cast<uint8_t>(selectedChannelValueSlider = 255));
+        selectedChannelValueSlider = 255;
+        updated = true;
 	}
+
+    if (updated) {
+        dmxBucket.setOneChannel(selectedChannel, static_cast<uint8_t>(selectedChannelValueSlider));
+        if (serialUpdater) {
+            serialUpdater->announceDataReady();
+        }
+        BOOST_LOG_TRIVIAL(debug) << "Manually setting DMX channel " << selectedChannel + 1 << " to " << selectedChannelValueSlider;
+    }
 	
 	ImGui::Columns(1);
 
@@ -102,3 +121,7 @@ void DMXWindow::draw() {
 }
 
 DMXWindow::DMXWindow(DMXBucket &dmxBucket) : dmxBucket(dmxBucket) {}
+
+void DMXWindow::setSerialUpdater(const std::shared_ptr<SerialThread::Updater> &serialUpdater) {
+	this->serialUpdater = serialUpdater;
+}

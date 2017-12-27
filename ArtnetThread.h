@@ -28,6 +28,7 @@ class ArtnetThread {
 
     inline void OpDmx(std::size_t received_size);
     inline void OpPoll();
+    inline void OpPollReply(std::size_t received_size);
 
 public:
     void operator()();

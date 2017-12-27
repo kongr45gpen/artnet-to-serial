@@ -62,8 +62,8 @@ vector<std::pair<string, string> > SerialInterface::listInterfaces() {
 				}
 
 				ifaces.push_back(std::make_pair<string,string>(
-					itr->path().string().c_str(),
-					itr->path().leaf().string().c_str()
+					deviceName.c_str(),
+					itr->path().leaf().string().c_str() // TODO: Try to get rid of the c_str()s
 				));
 			}
 		}
@@ -124,7 +124,7 @@ void SerialInterface::test() {
 		boost::asio::write(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()));
 	} catch (boost::system::system_error &e) {
 		BOOST_LOG_TRIVIAL(error) << "Unable to write test to serial interface: " << e.what();
-		
+
 		// Update the `connected` variable while we're at it
 		if (!serial->is_open()) {
 			connected = false;
@@ -171,7 +171,10 @@ void SerialInterface::write(const std::array<uint8_t, 512> &dmxValues) {
     std::ostringstream ss;
     ss << opSignal << 'f';
 
+    int i = 0;
+
     for (auto &val : dmxValues) {
+        if (i++ > 16) break;
         ss << val;
         if (val == opSignal) {
             // We're sending an operation code -- send it again so that the receiver understands it's just part of

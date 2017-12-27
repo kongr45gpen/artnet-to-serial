@@ -83,6 +83,9 @@ int main(int, char **) {
     boost::thread t_1(artnetThread);
     boost::thread t_2(serialThread);
 
+    // Pass some dependency injection
+    dmxWindow.setSerialUpdater(serialUpdater);
+
     // Main loop
     while (!glfwWindowShouldClose(window)) {
         if (glfwGetWindowAttrib(window, GLFW_ICONIFIED)) {

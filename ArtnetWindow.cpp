@@ -9,7 +9,7 @@ using boost::lock_guard;
 using boost::mutex;
 
 ArtnetWindow::ArtnetWindow() : receivingLED({0.2f, 1.0f, 0, 0.7f}, boost::chrono::milliseconds(50), "Receiving") {
-    controllers.insert("127.0.0.1");
+    controllers.emplace("127.0.0.1", "Localhost");
 }
 
 void ArtnetWindow::draw() {
@@ -17,7 +17,8 @@ void ArtnetWindow::draw() {
     devices_mtx_.lock();
     while (!pendingDevices.empty()) {
         std::string &device = pendingDevices.front();
-        controllers.insert(device);
+        // Note that emplace doesn't modify the content if it already exists
+        controllers.emplace(device, "");
         pendingDevices.pop();
     }
     devices_mtx_.unlock();
@@ -46,12 +47,13 @@ void ArtnetWindow::draw() {
 
     for (const auto &controller : controllers) {
         std::ostringstream ss;
-        ss << controller << "\n ";
+        ss << controller.first << "\n";
+        ss << controller.second;
 
-        selected = (selectedInterface == controller && !anySelected);
+        selected = (selectedInterface == controller.first && !anySelected);
 
         if (ImGui::Selectable(ss.str().c_str(), &selected) && selected) {
-            selectedInterface = controller;
+            selectedInterface = controller.first;
             anySelected = false;
         }
     }
@@ -83,4 +85,9 @@ void ArtnetWindow::pushController(const std::string &address) {
 void ArtnetWindow::setDeviceCallback(const std::function<void(bool, const std::string &)> &deviceCallback) {
     lock_guard<mutex> guard(device_callback_mtx_);
     ArtnetWindow::deviceCallback = deviceCallback;
+}
+
+void ArtnetWindow::pushControllerDescription(const std::string &address, const std::string &description) {
+    lock_guard<mutex> guard(devices_mtx_);
+    controllers[address] = description;
 }

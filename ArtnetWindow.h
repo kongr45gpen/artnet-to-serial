@@ -11,7 +11,7 @@
 #include "gui/ActivityLED.h"
 
 class ArtnetWindow {
-    std::set<std::string> controllers;
+    std::map<std::string, std::string> controllers; // name -> description map
     std::string selectedInterface;
     bool anySelected = true;
 
@@ -33,6 +33,7 @@ public:
         receivingLED.announce();
     };
     void pushController(const std::string &address);
+    void pushControllerDescription(const std::string &address, const std::string &description);
 
     /**
      * @return A pair of (anySelected, selectedInterface)
