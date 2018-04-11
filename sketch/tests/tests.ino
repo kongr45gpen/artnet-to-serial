@@ -32,7 +32,7 @@ void setup() {
   ** easily change the number of channels sent here. If you don't
   ** do this, DmxSimple will set the maximum channel number to the
   ** highest channel you DmxSimple.write() to. */
-  //DmxSimple.maxChannel(70);
+  DmxSimple.maxChannel(70);
 
   pinMode(2,OUTPUT);
   analogWrite(2,125);
@@ -52,7 +52,7 @@ void loop() {
       brightness = ceil(255*inter);
       
       /* Update DMX channel 1 to new brightness */
-      if(channel==3) DmxSimple.write(shift+channel, brightness);
+      if(channel==3||1) DmxSimple.write(shift+channel, brightness);
     }
     DmxSimple.write(shift+4, 0);
     DmxSimple.write(shift+5, 0);

@@ -25,10 +25,13 @@ enum operation {
 };
 
 void setup() {
-
-  Serial.begin(230400);
+  Serial.begin(115200);
   
   Serial.print("r&c");
+
+  // Deactivate DMX, just to be sure
+  pinMode(3, OUTPUT);
+  digitalWrite(3, HIGH);
 
   // ERROR pin
   pinMode(4, OUTPUT);
@@ -38,7 +41,7 @@ void setup() {
   pinMode(32, OUTPUT);
 
   digitalWrite(4, HIGH);
-  delay(100);
+  delay(500);
   digitalWrite(4, LOW);
 
   {
@@ -61,9 +64,11 @@ void setup() {
      */
      DmxSimple.usePin(3);
 
-     for (int i = 1; i <= 16; i++) {
+     for (int i = 1; i <= 3; i++) {
+      DmxSimple.write(i, 255);
+      delay(150);
       DmxSimple.write(i, 25);
-      delay(50);
+      delay(150);
       DmxSimple.write(i, 0);
      }
   }
