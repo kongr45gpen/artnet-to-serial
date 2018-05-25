@@ -53,7 +53,7 @@ void setup() {
     // TLC test run
     Tlc.setAll(0);
     Tlc.update();
-    delay(100);
+    delay(500);
     Tlc.setAll(4095);
     Tlc.update();
   }
@@ -146,10 +146,10 @@ void loop() {
 
     // DMX channels 7-12 are used to power PWM devices, e.g. a LED strip,
     // connected on the Arduino's "analog" output pins.
-    if (channel < 16) {
-      Tlc.set(channel,value);
+    if (channel >= 7 && channel < 7 + 16) {
+      Tlc.set(channel - 7,value);
     }
-    if (channel == 15) {
+    if (channel == 15 + 7) {
       Tlc.update();
     }
 
