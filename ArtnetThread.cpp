@@ -96,8 +96,8 @@ void ArtnetThread::handleReceive(const boost::system::error_code &error,
 }
 
 inline void ArtnetThread::OpPollReply(std::size_t size) {
-    auto shortName = static_cast<char*>(buffer.begin() + 26);
-    auto longName = static_cast<char*>(buffer.begin() + 44);
+    auto shortName = static_cast<char*>(&(*(buffer.begin() + 26)));
+    auto longName = static_cast<char*>(&(*(buffer.begin() + 44)));
 
     // Make sure we don't go to bad memory areas if an invalid package is received
     shortName[17] = longName[63] = '\0';

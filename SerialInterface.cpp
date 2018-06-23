@@ -174,7 +174,7 @@ void SerialInterface::write(const std::array<uint8_t, 512> &dmxValues) {
     int i = 0;
 
     for (auto &val : dmxValues) {
-        if (i++ > 100) break;
+        if (i++ > 40) break;
         ss << val;
         if (val == opSignal) {
             // We're sending an operation code -- send it again so that the receiver understands it's just part of
