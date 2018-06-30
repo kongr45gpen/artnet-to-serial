@@ -94,24 +94,39 @@ void SerialInterface::connect(std::string port, unsigned int baud_rate) {
         serial = std::make_shared<serial_port>(*io, port);
         serial->set_option(serial_port_base::baud_rate(baud_rate));
 
+		// Default Arduino UART options
+		serial->set_option(serial_port_base::character_size(8));
+		serial->set_option(serial_port_base::stop_bits(serial_port_base::stop_bits::one));
+		serial->set_option(serial_port_base::parity(serial_port_base::parity::none));
+		serial->set_option(serial_port_base::flow_control(serial_port_base::flow_control::none));
+
 		connected = true;
     } catch (boost::system::system_error &e) {
         BOOST_LOG_TRIVIAL(error) << "Unable to open interface " << port << ": " << e.what();
-    }
+	} catch (...) {
+		BOOST_LOG_TRIVIAL(error) << "Unable to open interface " << port << ": " << "Unknown error";
+	}
 }
 
 void SerialInterface::disconnect() {
 	connected = false;
     // No lock acquired, we assume the lock is already in place by the caller function
-    if (serial && serial->is_open()) {
-        BOOST_LOG_TRIVIAL(debug) << "Closing serial interface";
-        try {
-            serial->cancel();
-            serial->close();
-        } catch(...) {
-            BOOST_LOG_TRIVIAL(error) << "Unable to close serial interface";
-        }
-    }
+
+	try {
+		if (serial && serial->is_open()) {
+			BOOST_LOG_TRIVIAL(debug) << "Closing serial interface";
+
+			serial->cancel();
+			serial->close();
+			serial.reset();
+		}
+		if (io) {
+			io->stop();
+			io->reset();
+		}
+	} catch (...) {
+		BOOST_LOG_TRIVIAL(error) << "Unable to close serial interface";
+	}
 }
 
 void SerialInterface::test() {
