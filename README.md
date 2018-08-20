@@ -16,7 +16,7 @@ netsh interface ipv4 add address "Ethernet" 2.168.1.4 255.0.0.0
 ## LED tape connector pinout
 ```
 1 - +12V
-2 - Red
+2 - Red / Single Colour
 3 - Green
 4 - (Reserved)
 5 - Blue
