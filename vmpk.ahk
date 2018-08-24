@@ -2,8 +2,6 @@
 ; when CapsLock is enabled, and sends them to the vmpk.exe application
 
 #If CapsLocked()
-^j::
-^i::
 a::
 b::
 c::
@@ -90,6 +88,8 @@ NumpadDot::
 /::
 `;::
 '::
+-::
+=::
 	Suspend On
 	
 	SetKeyDelay, 0, 40
