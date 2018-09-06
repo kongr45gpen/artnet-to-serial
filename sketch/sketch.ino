@@ -49,6 +49,15 @@ void setup() {
      * TLC INITIALISATION
      */
     Tlc.init();
+
+    /**
+     * Set timer prescaler to /8 to reduce PWM frequency
+     * Remove these lines if your hardware can handle high frequencies
+     */
+    TCCR1B &= ~_BV(CS10);
+    TCCR1B |=  _BV(CS11);
+    TCCR3B &= ~_BV(CS30);
+    TCCR3B |=  _BV(CS31);
   
     // TLC test run
     Tlc.setAll(0);
