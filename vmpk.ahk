@@ -90,17 +90,21 @@ NumpadDot::
 '::
 -::
 =::
-	Suspend On
+	;Suspend On
 	
-	SetKeyDelay, 0, 40
+	SetKeyDelay, 0, -1, Play
 	
 	;Send, My First Script
 	SetTitleMatchMode, 2
 	;if WinExist("ahk_exe notepad++.exe")
-	ControlSend, ahk_parent, {%A_ThisHotkey%},  ahk_exe vmpk.exe
-	;MsgBox %A_ThisHotkey%
+	ControlSend, ahk_parent, {%A_ThisHotkey% down},  ahk_exe vmpk.exe
 	
-	Suspend Off
+	KeyWait, %A_ThisHotkey%
+	ControlSend, ahk_parent, {%A_ThisHotkey% up},  ahk_exe vmpk.exe
+
+	; MsgBox %A_ThisHotkey%
+	
+	;Suspend Off
 	return
 
 CapsLocked() {
