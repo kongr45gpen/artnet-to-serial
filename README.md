@@ -1,8 +1,8 @@
 # artnet-to-serial
 
-![Block diagram: Lighting control Software to artnet-to-serial to Arduino to DMX board and TLC5940 board. DMX board to DMX lights. TLC5940 to LED strip controllers to LED strips.](docs/diagram.png?raw=true "artnet-to-serial block diagram")
+![Coloured LED strips connected to power suply](docs/ledstrips.jpg "artnet-to-serial usage example with LED strips")
 
-## Required commands to receive Art-Net packets
+## Required commands to receive Art-Net packets from remote hosts
 ```bash
 # Linux
 sudo ifconfig eth0:0 2.168.1.100 broadcast 2.255.255.255 up
@@ -10,6 +10,9 @@ sudo ifconfig eth0:0 2.168.1.100 broadcast 2.255.255.255 up
 # Windows
 netsh interface ipv4 add address "Ethernet" 2.168.1.4 255.0.0.0
 ```
+
+## Block diagram
+![Block diagram: Lighting control Software to artnet-to-serial to Arduino to DMX board and TLC5940 board. DMX board to DMX lights. TLC5940 to LED strip controllers to LED strips.](docs/diagram.png?raw=true "artnet-to-serial block diagram")
 
 ## Windows Development Dependencies
 - Microsoft Visual Studio 2017
