@@ -11,11 +11,11 @@
  */
 
 #include <DmxSimple.h>
-#include "Tlc5940.h"
+//#include "Tlc5940.h"
 
-#ifndef TLC_TIMER3_GSCLK
-  #error Please define the required values
-#endif
+//#ifndef TLC_TIMER3_GSCLK
+//  #error Please define the required values
+//#endif
 
 
 enum operation {
@@ -25,7 +25,7 @@ enum operation {
 };
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(250000);
   
   Serial.print("r&c");
 
@@ -40,6 +40,10 @@ void setup() {
   // DMX MAX ERROR pin
   pinMode(32, OUTPUT);
 
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+
   digitalWrite(4, HIGH);
   delay(500);
   digitalWrite(4, LOW);
@@ -48,23 +52,25 @@ void setup() {
     /**
      * TLC INITIALISATION
      */
-    Tlc.init();
+    //Tlc.init();
 
     /**
      * Set timer prescaler to /8 to reduce PWM frequency
      * Remove these lines if your hardware can handle high frequencies
      */
-    TCCR1B &= ~_BV(CS10);
+ /*   TCCR1B &= ~_BV(CS10);
     TCCR1B |=  _BV(CS11);
     TCCR3B &= ~_BV(CS30);
-    TCCR3B |=  _BV(CS31);
+    TCCR3B |=  _BV(CS31);*/
   
     // TLC test run
+    /*
     Tlc.setAll(0);
     Tlc.update();
     delay(500);
     Tlc.setAll(4095);
     Tlc.update();
+    */
   }
 
   {
@@ -149,18 +155,23 @@ void loop() {
     float inter = (exp(a_dmx*origin)-1)/(exp(a_dmx)-1);
     DmxSimple.write(channel + 1, 255*inter);
 
-    inter = (exp(a_tlc*origin)-1)/(exp(a_tlc)-1);
-    value = 4095*inter;
-    value = 4095-value;
+    if (channel == 46 || channel == 47 || channel == 48) {
+
+      inter = (exp(a_tlc*origin)-1)/(exp(a_tlc)-1);
+      value = 255*inter;
+      //value = 4095-value;
+
+      analogWrite(channel-37, value);
+    }
 
     // DMX channels 7-12 are used to power PWM devices, e.g. a LED strip,
     // connected on the Arduino's "analog" output pins.
-    if (channel >= 7 && channel < 7 + 16) {
+    /*if (channel >= 7 && channel < 7 + 16) {
       Tlc.set(channel - 7,value);
     }
     if (channel == 15 + 7) {
       Tlc.update();
-    }
+    }*/
 
     channel++;
   } else {
