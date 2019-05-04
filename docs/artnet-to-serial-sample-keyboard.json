@@ -1,0 +1,229 @@
+[
+  {
+    "name": "artnet-to-serial Sample Keyboard",
+    "author": "kongr45gpen"
+  },
+  [
+    "Esc",
+    {
+      "x": 1,
+      "c": "#dca2c8"
+    },
+    "F1\n\n\n\n\n\n\n\n\nRed",
+    "F2\n\n\n\n\n\n\n\n\nGreen",
+    "F3\n\n\n\n\n\n\n\n\nBlue",
+    "F4\n\n\n\n\n\n\n\n\nMagenta",
+    {
+      "x": 0.5
+    },
+    "F5\n\n\n\n\n\n\n\n\nNatural",
+    "F6",
+    "F7",
+    "F8",
+    {
+      "x": 0.5
+    },
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    {
+      "x": 0.25,
+      "c": "#cccccc"
+    },
+    "PrtSc",
+    "Scroll Lock",
+    "Pause\nBreak"
+  ],
+  [
+    {
+      "y": 0.5,
+      "c": "#008e43"
+    },
+    "~\n`\n\n\n\n\n\n\n\n0%",
+    "!\n1\n\n\n\n\n\n\n\n15%",
+    "@\n2\n\n\n\n\n\n\n\n45%",
+    "#\n3\n\n\n\n\n\n\n\n70%",
+    {
+      "c": "#ea4221"
+    },
+    "$\n4\n\n\n\n\n\n\nSTR\nRainbow",
+    "%\n5\n\n\n\n\n\n\nSTR\nAll",
+    "^\n6\n\n\n\n\n\n\nSTR",
+    {
+      "c": "#ba1312"
+    },
+    "&\n7\n\n\n\n\n\n\n!off\nUV",
+    "*\n8\n\n\n\n\n\n\nFull\nBrt\nslow",
+    "(\n9\n\n\n\n\n\n\nFull\nBrt\nFl",
+    ")\n0\n\n\n\n\n\n\nBlack\nOut",
+    {
+      "c": "#008e43"
+    },
+    "_\n-\n\n\n\n\n\n\n\n0%",
+    "+\n=\n\n\n\n\n\n\n\n100%",
+    {
+      "c": "#69d0a5",
+      "w": 2
+    },
+    "Backspace\n\n\n\n\n\n\n\n\nCLEAR",
+    {
+      "x": 0.25,
+      "c": "#cccccc"
+    },
+    "Insert",
+    "Home",
+    "PgUp"
+  ],
+  [
+    {
+      "c": "#d48600",
+      "w": 1.5
+    },
+    "Tab\n\n\n\n\n\n\n\nOff\nSequences",
+    {
+      "c": "#66d0d0"
+    },
+    "Q\n\n\n\n\n\n\n\n\nPAR",
+    "W\n\n\n\n\n\n\n\n\nAmber",
+    "E\n\n\n\n\n\n\n\n\nRGBW\n1",
+    "R\n\n\n\n\n\n\n\n\nRGBW\n2",
+    "T\n\n\n\n\n\n\n\n\nRGB\n1",
+    "Y\n\n\n\n\n\n\n\n\nRGB\n2",
+    "U\n\n\n\n\n\n\n\n\nUV",
+    {
+      "c": "#e1ba44"
+    },
+    "I\n\n\n\n\n\n\n\n\n/2",
+    "O\n\n\n\n\n\n\n\n\nx2",
+    "P\n\n\n\n\n\n\n\n\nLearn",
+    {
+      "c": "#69d0a5"
+    },
+    "{\n[\n\n\n\n\n\n\nSel\nAll",
+    "}\n]\n\n\n\n\n\n\nSel\nAll\n+Amber,UV",
+    {
+      "c": "#cccccc",
+      "w": 1.5
+    },
+    "|\n\\",
+    {
+      "x": 0.25
+    },
+    "Delete",
+    "End",
+    "PgDn"
+  ],
+  [
+    {
+      "c": "#30312e",
+      "w": 1.75
+    },
+    "Caps Lock\n\n\n\n\n\n\n\n\nPersistent\nControl",
+    {
+      "c": "#c0b5aa"
+    },
+    "A\n\n\n\n\n\n\n\n\nSCycle",
+    "S\n\n\n\n\n\n\n\n\nColourC",
+    "D\n\n\n\n\n\n\n\n\nSoftDimming",
+    {
+      "n": true
+    },
+    "F\n\n\n\n\n\n\n\n\nJustAll",
+    "G\n\n\n\n\n\n\n\n\nParOff",
+    "H\n\n\n\n\n\n\n\n\nAmber",
+    {
+      "n": true
+    },
+    "J\n\n\n\n\n\n\n\n\nUV",
+    {
+      "c": "#69d0a5"
+    },
+    "K\n\n\n\n\n\n\n\nSel\nRGBW",
+    "L\n\n\n\n\n\n\n\nSel\nRGB",
+    {
+      "c": "#cccccc"
+    },
+    ":\n;",
+    "\"\n'",
+    {
+      "w": 1.75,
+      "w2": 2.25
+    },
+    "Enter"
+  ],
+  [
+    {
+      "w": 2.25
+    },
+    "Shift",
+    {
+      "c": "#66d0d0"
+    },
+    "Z\n\n\n\n\n\n\n\nOff\nPAR",
+    "X\n\n\n\n\n\n\n\nOff\nAmber",
+    "C\n\n\n\n\n\n\n\nOff\nRGBW\n1",
+    "V\n\n\n\n\n\n\n\nOff\nRGBW\n2",
+    "B\n\n\n\n\n\n\n\nOff\nRGB\n1",
+    "N\n\n\n\n\n\n\n\nOff\nRGB\n2",
+    "M\n\n\n\n\n\n\n\nOff\nUV",
+    {
+      "c": "#cccccc"
+    },
+    "<\n,",
+    ">\n.",
+    "?\n/",
+    {
+      "w": 2.75
+    },
+    "Shift",
+    {
+      "x": 1.25
+    },
+    "↑"
+  ],
+  [
+    {
+      "c": "#69d0a5",
+      "w": 1.25
+    },
+    "Ctrl\n\n\n\n\n\n\n\n\nBlind",
+    {
+      "c": "#cccccc",
+      "w": 1.25
+    },
+    "Win",
+    {
+      "w": 1.25
+    },
+    "Alt",
+    {
+      "a": 7,
+      "w": 6.25
+    },
+    "",
+    {
+      "a": 4,
+      "w": 1.25
+    },
+    "Alt",
+    {
+      "w": 1.25
+    },
+    "Win",
+    {
+      "w": 1.25
+    },
+    "Menu",
+    {
+      "w": 1.25
+    },
+    "Ctrl",
+    {
+      "x": 0.25
+    },
+    "←",
+    "↓",
+    "→"
+  ]
+]
