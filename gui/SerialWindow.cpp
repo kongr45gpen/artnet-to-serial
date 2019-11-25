@@ -9,7 +9,7 @@ SerialWindow::SerialWindow(std::shared_ptr<SerialInterface> serialInterface) : s
 
         // Connect to the last interface
         if (!devices.empty()) {
-            serialInterface->connect(devices.back().first, 460800);
+            serialInterface->connect(devices.back().first);
         }
         item = (int) (devices.size() - 1);
 

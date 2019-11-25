@@ -67,10 +67,16 @@ void DMXWindow::draw() {
 	ImGui::Columns(3, "options");
 	if (ImGui::Button("Reset All")) {
 		dmxBucket.clearData();
+        if (serialUpdater) {
+            serialUpdater->announceDataReady();
+        }
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Randomise")) {
 		dmxBucket.setRandomData();
+        if (serialUpdater) {
+            serialUpdater->announceDataReady();
+        }
 	}
     if (ImGui::Button("Force Update")) {
         if (serialUpdater) {

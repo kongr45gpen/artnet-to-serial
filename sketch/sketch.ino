@@ -42,7 +42,7 @@ void setup() {
 
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
-  pinMode(11, OUTPUT);
+  pinMode(8, OUTPUT);
 
   digitalWrite(4, HIGH);
   delay(500);
@@ -161,7 +161,7 @@ void loop() {
       value = 255*inter;
       //value = 4095-value;
 
-      analogWrite(channel-37, value);
+ if (channel != 48)     analogWrite(channel-37, value); else analogWrite(8, value);
     }
 
     // DMX channels 7-12 are used to power PWM devices, e.g. a LED strip,
