@@ -4,6 +4,8 @@ project (demo)
 
 set (CMAKE_CXX_STANDARD 11)
 
+set(OpenGL_GL_PREFERENCE "GLVND")
+
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Boost 1.50 COMPONENTS filesystem log thread REQUIRED )
