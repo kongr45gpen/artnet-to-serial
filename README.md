@@ -25,9 +25,9 @@ netsh interface ipv4 add address "Ethernet" 2.168.1.4 255.0.0.0
 1 - +12V
 2 - Red / Single Colour
 3 - Green
-4 - (Reserved)
+4 - Cool White / Other Colour
 5 - Blue
-6 - White
+6 - White / Warm White
 ```
 
 - LED tape: **Male** connector
