@@ -40,7 +40,7 @@ public:
         return baudRate;
     }
 
-    void connect(std::string port, unsigned int baudRate = 2000000);
+    void connect(std::string port, unsigned int baudRate = 500000);
     void disconnect();
 	bool isConnected() const {
 		return connected;
