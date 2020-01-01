@@ -4,7 +4,7 @@
 #include <boost/log/trivial.hpp>
 
 void DMXWindow::draw() {
-    ImGui::SetNextWindowSize(ImVec2(520, 700), ImGuiSetCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(520, 700), ImGuiCond_FirstUseEver);
     ImGui::Begin("DMX Output");
 
 	// ImGuiWindowFlags_HorizontalScrollbar

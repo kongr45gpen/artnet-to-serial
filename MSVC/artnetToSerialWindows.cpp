@@ -143,6 +143,9 @@ int main(int, char**)
 			);
 	BOOST_LOG_TRIVIAL(info) << "Starting artnetToSerial...";
 
+	// Initialize ImGui
+	ImGui::CreateContext();
+
 	// Create application window
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, LoadCursor(NULL, IDC_ARROW), NULL, NULL, _T("ImGui Example"), NULL };
 	RegisterClassEx(&wc);
@@ -241,7 +244,7 @@ int main(int, char**)
 		if (show_test_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);     // Normally user code doesn't need/want to call it because positions are saved in .ini file anyway. Here we just want to make the demo initial state a bit more friendly!
-			ImGui::ShowTestWindow(&show_test_window);
+			ImGui::ShowDemoWindow(&show_test_window);
 		}
 
 		serialWindow.draw();

@@ -570,7 +570,7 @@ bool    ImGui_ImplDX11_Init(void* hwnd, ID3D11Device* device, ID3D11DeviceContex
 void ImGui_ImplDX11_Shutdown()
 {
     ImGui_ImplDX11_InvalidateDeviceObjects();
-    ImGui::Shutdown();
+    ImGui::DestroyContext();
     g_pd3dDevice = NULL;
     g_pd3dDeviceContext = NULL;
     g_hWnd = (HWND)0;
@@ -605,7 +605,7 @@ void ImGui_ImplDX11_NewFrame()
     // io.MouseWheel : filled by WM_MOUSEWHEEL events
 
     // Set OS mouse position if requested last frame by io.WantMoveMouse flag (used when io.NavMovesTrue is enabled by user and using directional navigation)
-    if (io.WantMoveMouse)
+    if (io.WantSetMousePos)
     {
         POINT pos = { (int)io.MousePos.x, (int)io.MousePos.y };
         ClientToScreen(g_hWnd, &pos);

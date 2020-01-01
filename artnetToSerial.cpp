@@ -40,6 +40,9 @@ int main(int, char **) {
     BOOST_LOG_TRIVIAL(info) << "Starting artnetToSerial...";
 //    boost::log::core::get()->set_logging_enabled(false);
 
+    // Initialize ImGui
+    ImGui::CreateContext();
+
     // Setup window
     glfwSetErrorCallback([](int error, const char *description) {
         BOOST_LOG_TRIVIAL(error) << "GLFW Error: " << error << description;

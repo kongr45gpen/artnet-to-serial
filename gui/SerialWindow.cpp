@@ -19,7 +19,7 @@ SerialWindow::SerialWindow(std::shared_ptr<SerialInterface> serialInterface) : s
 }
 
 void SerialWindow::draw() {
-    ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_FirstUseEver);
     ImGui::Begin("Arduino Serial Port");
 
     if (ImGui::Button("Refresh")) {

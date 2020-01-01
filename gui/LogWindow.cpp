@@ -10,7 +10,7 @@ LogWindow::LogWindow() : items(400) {
 }
 
 void LogWindow::draw() {
-    ImGui::SetNextWindowSize(ImVec2(520,600), ImGuiSetCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(520,600), ImGuiCond_FirstUseEver);
     if (!ImGui::Begin("Log")) {
         ImGui::End();
         return;

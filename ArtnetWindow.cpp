@@ -23,7 +23,7 @@ void ArtnetWindow::draw() {
     }
     devices_mtx_.unlock();
 
-    ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiSetCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
     ImGui::Begin("ArtNet");
 
     ImGui::Text("ArtNet Controllers:");

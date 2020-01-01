@@ -75,6 +75,9 @@
     <ClCompile Include="..\lib\enumser\enumser.cpp">
       <Filter>References</Filter>
     </ClCompile>
+    <ClCompile Include="..\lib\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ArtnetThread.h">
