@@ -8,12 +8,11 @@ SerialThread::SerialThread(const std::shared_ptr<SerialInterface> &serialInterfa
 void SerialThread::operator()() {
     while (true) {
         boost::unique_lock<boost::mutex> lock(updater->ready_mtx_);
-        /*while (!updater->dataReady) {
+        while (!updater->dataReady) {
             updater->cond.wait(lock);
         }
         updater->dataReady = false;
-        lock.unlock();*/
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(1000/30));
+        lock.unlock();
 
         serialInterface->write(dmxBucket->getData());
     }
