@@ -136,7 +136,11 @@ void SerialInterface::test() {
     std::ostringstream ss;
     ss << opSignal << 'f' << '\0' << '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< 'a' << 'a' << 'a' << 'a' << 'a';
 	try {
-		writeWithTimeout(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()), boost::posix_time::milliseconds(100));
+        if (serial && serial->is_open()) {
+            writeWithTimeout(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()), boost::posix_time::milliseconds(100));
+        } else {
+            BOOST_LOG_TRIVIAL(error) << "Cannot write test to serial port, because it is not open";
+        }
 	} catch (boost::system::system_error &e) {
 		BOOST_LOG_TRIVIAL(error) << "Unable to write test to serial interface: " << e.what();
 
@@ -154,7 +158,11 @@ void SerialInterface::resetError() {
     std::ostringstream ss;
     ss << opSignal << 'e';
 	try {
-        writeWithTimeout(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()), boost::posix_time::milliseconds(100));
+        if (serial && serial->is_open()) {
+            writeWithTimeout(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()), boost::posix_time::milliseconds(100));
+        } else {
+            BOOST_LOG_TRIVIAL(error) << "Cannot reset error serial port, because it is not open";
+        }
 	}
 	catch (boost::system::system_error &e) {
 		BOOST_LOG_TRIVIAL(error) << "Unable to clear error bit in serial interface: " << e.what();
