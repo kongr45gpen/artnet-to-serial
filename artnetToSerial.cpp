@@ -54,7 +54,7 @@ int main(int, char **) {
     HWND hwnd = CreateWindow(_T("artlight ImGui"), _T("Artnet To Serial"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
-    if (CreateDeviceD3D(hwnd) < 0)
+    if (CreateDeviceD3D(hwnd) != 1)
     {
         CleanupDeviceD3D();
         UnregisterClass(_T("artlight ImGui"), wc.hInstance);
