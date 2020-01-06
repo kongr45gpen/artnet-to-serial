@@ -144,6 +144,7 @@
     <ClCompile Include="..\lib\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\LoggingUtilities.cpp" />
+    <ClCompile Include="..\platform\WindowsGraphics.cpp" />
     <ClCompile Include="..\SerialInterface.cpp" />
     <ClCompile Include="..\SerialThread.cpp" />
     <ClCompile Include="artnetToSerialWindows.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="..\lib\imgui\stb_textedit.h" />
     <ClInclude Include="..\lib\imgui\stb_truetype.h" />
     <ClInclude Include="..\LoggingUtilities.h" />
+    <ClInclude Include="..\platform\WindowsGraphics.h" />
     <ClInclude Include="..\SerialInterface.h" />
     <ClInclude Include="..\SerialThread.h" />
     <ClInclude Include="config.h" />

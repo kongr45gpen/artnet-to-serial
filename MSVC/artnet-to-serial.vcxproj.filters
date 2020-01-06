@@ -81,6 +81,9 @@
     <ClCompile Include="..\lib\imgui\examples\imgui_impl_win32.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="..\platform\WindowsGraphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ArtnetThread.h">
@@ -141,6 +144,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\LogWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\WindowsGraphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
