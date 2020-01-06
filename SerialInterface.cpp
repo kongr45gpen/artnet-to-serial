@@ -91,7 +91,7 @@ void SerialInterface::connect(std::string port, unsigned int baud_rate) {
         BOOST_LOG_TRIVIAL(debug) << "Opening serial interface " << port << " [" << baud_rate << ']';
 
         io = std::make_shared<io_context>();
-        serial = std::make_shared<basic_serial_port<io_context::executor_type> >(*io, port);
+        serial = std::make_shared<SerialPort>(*io, port);
         serial->set_option(serial_port_base::baud_rate(baud_rate));
 
 		// Default Arduino UART options
@@ -208,7 +208,7 @@ void SerialInterface::write(const std::array<uint8_t, 512> &dmxValues) {
 
     try {
         if (!serial || !serial->is_open()) {
-            BOOST_LOG_TRIVIAL(error) << "Serial port is not open";
+            BOOST_LOG_TRIVIAL(trace) << "Serial port is not open";
             return;
         }
 
@@ -235,7 +235,7 @@ DataStatistics &SerialInterface::getStats() {
 }
 
 template <typename SyncReadStream, typename ConstBufferSequence>
-static void SerialInterface::writeWithTimeout(SyncReadStream& s, const ConstBufferSequence& buffers, const boost::asio::deadline_timer::duration_type& expiry_time) {
+void SerialInterface::writeWithTimeout(SyncReadStream& s, const ConstBufferSequence& buffers, const boost::asio::deadline_timer::duration_type& expiry_time) {
     boost::asio::io_context& io = s.get_executor().context();
     boost::optional<boost::system::error_code> timer_result;
     boost::asio::deadline_timer timer(io);
