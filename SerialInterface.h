@@ -11,8 +11,8 @@
 #include "DMXBucket.h"
 
 class SerialInterface {
-    std::shared_ptr<boost::asio::io_service> io;
-    std::shared_ptr<boost::asio::serial_port> serial;
+    std::shared_ptr<boost::asio::io_context> io;
+    std::shared_ptr<boost::asio::basic_serial_port<boost::asio::io_context::executor_type> > serial;
     std::atomic_bool connected; // Used just for the indicator, might not be trustworthy
 
     std::shared_ptr<ActivityLED> led;
@@ -31,6 +31,9 @@ class SerialInterface {
     const static uint8_t opSignal = 125;
 
     boost::mutex mtx_;
+
+    template <typename SyncReadStream, typename ConstBufferSequence>
+    static void writeWithTimeout(SyncReadStream& s, const ConstBufferSequence& buffers, const boost::asio::deadline_timer::duration_type& expiry_time);
 public:
     SerialInterface();
     virtual ~SerialInterface();

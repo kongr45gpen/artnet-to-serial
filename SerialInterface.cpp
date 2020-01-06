@@ -90,8 +90,8 @@ void SerialInterface::connect(std::string port, unsigned int baud_rate) {
         }
         BOOST_LOG_TRIVIAL(debug) << "Opening serial interface " << port << " [" << baud_rate << ']';
 
-        io = std::make_shared<io_service>();
-        serial = std::make_shared<serial_port>(*io, port);
+        io = std::make_shared<io_context>();
+        serial = std::make_shared<basic_serial_port<io_context::executor_type> >(*io, port);
         serial->set_option(serial_port_base::baud_rate(baud_rate));
 
 		// Default Arduino UART options
@@ -136,7 +136,7 @@ void SerialInterface::test() {
     std::ostringstream ss;
     ss << opSignal << 'f' << '\0' << '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< '\0'<< 'a' << 'a' << 'a' << 'a' << 'a';
 	try {
-		boost::asio::write(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()));
+		writeWithTimeout(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()), boost::posix_time::milliseconds(100));
 	} catch (boost::system::system_error &e) {
 		BOOST_LOG_TRIVIAL(error) << "Unable to write test to serial interface: " << e.what();
 
@@ -154,7 +154,7 @@ void SerialInterface::resetError() {
     std::ostringstream ss;
     ss << opSignal << 'e';
 	try {
-		boost::asio::write(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()));
+        writeWithTimeout(*serial, boost::asio::buffer(ss.str().c_str(), ss.str().length()), boost::posix_time::milliseconds(100));
 	}
 	catch (boost::system::system_error &e) {
 		BOOST_LOG_TRIVIAL(error) << "Unable to clear error bit in serial interface: " << e.what();
@@ -224,4 +224,30 @@ void SerialInterface::setLed(const shared_ptr<ActivityLED> &led) {
 DataStatistics &SerialInterface::getStats() {
     return stats;
 
+}
+
+template <typename SyncReadStream, typename ConstBufferSequence>
+static void SerialInterface::writeWithTimeout(SyncReadStream& s, const ConstBufferSequence& buffers, const boost::asio::deadline_timer::duration_type& expiry_time) {
+    boost::asio::io_context& io = s.get_executor().context();
+    boost::optional<boost::system::error_code> timer_result;
+    boost::asio::deadline_timer timer(io);
+    timer.expires_from_now(expiry_time);
+    timer.async_wait([&timer_result](const boost::system::error_code& error) { timer_result.reset(error); });
+
+    boost::optional<boost::system::error_code> read_result;
+    boost::asio::async_write(s, buffers, [&read_result](const boost::system::error_code& error, size_t) { read_result.reset(error); });
+
+    io.reset();
+    while (io.run_one()) {
+        if (read_result) {
+            timer.cancel();
+        } else if (timer_result) {
+            s.cancel();
+            BOOST_LOG_TRIVIAL(warning) << "Serial port timeout [" << (expiry_time.total_microseconds()) << " us]";
+        }
+    }
+
+    if (*read_result) {
+        throw boost::system::system_error(*read_result);
+    }
 }
