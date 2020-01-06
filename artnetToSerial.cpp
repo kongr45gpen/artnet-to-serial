@@ -40,10 +40,9 @@ int main(int, char **) {
     auto console_sink = boost::log::add_console_log(std::cout);
     console_sink->set_formatter(&LoggingUtilities::coloring_terminal_formatter);
 
-    boost::log::core::get()->set_filter
-            (
-                    boost::log::trivial::severity >= boost::log::trivial::debug
-            );
+    boost::log::core::get()->set_filter(
+        boost::log::trivial::severity >= boost::log::trivial::debug
+    );
     BOOST_LOG_TRIVIAL(info) << "Starting artnetToSerial...";
 //    boost::log::core::get()->set_logging_enabled(false);
 
@@ -96,8 +95,9 @@ int main(int, char **) {
     auto logWindow_p = std::make_shared<LogWindow>();
     LogWindow &logWindow = *logWindow_p;
     typedef boost::log::sinks::synchronous_sink<LoggingUtilities::GUISinkBackend> sink_t;
-//    boost::shared_ptr<sink_t> sink(new sink_t(logWindow_p));
-//    boost::log::core::get()->add_sink(sink);
+    auto guiSinkBackend = boost::make_shared<LoggingUtilities::GUISinkBackend>(logWindow_p);
+    boost::shared_ptr<sink_t> sink(new sink_t(guiSinkBackend));
+    boost::log::core::get()->add_sink(sink);
 
     // Initialise the DMX Bucket
     auto dmxBucket_p = std::make_shared<DMXBucket>();
