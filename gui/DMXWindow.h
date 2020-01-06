@@ -11,6 +11,8 @@ class DMXWindow {
 	int selectedChannelValueSlider = 0;
 
 	std::shared_ptr<SerialThread::Updater> serialUpdater;
+
+	float doubleExponentialSeat(float x, float a, float b);
 public:
     void draw();
 

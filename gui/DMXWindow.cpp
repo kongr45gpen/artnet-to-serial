@@ -3,6 +3,28 @@
 #include <iomanip>
 #include <boost/log/trivial.hpp>
 
+/**
+ * Double exponential seat-style easing
+ * Takes two easing parameters (a,b) for the left and right parts of the input
+ * All inputs should be between 0 and 1
+ * Source: http://www.flong.com/texts/code/shapers_exp/
+ */
+float DMXWindow::doubleExponentialSeat(float x, float a, float b)
+{
+    // Clamp a, b values
+    float epsilon = 0.00001;
+    float min_param_a = 0.0 + epsilon;
+    float max_param_a = 1.0 - epsilon;
+    a = std::min(max_param_a, std::max(min_param_a, a));
+    b = std::min(max_param_a, std::max(min_param_a, b));
+
+    if (x <= 0.5f) {
+        return (powf(2.0f * x, 1 - a)) / 2.0;
+    } else {
+        return 1.0f - (powf(2.0f * (1.0f - x), 1 - b)) / 2.0f;
+    }
+}
+
 void DMXWindow::draw() {
     ImGui::SetNextWindowSize(ImVec2(520, 700), ImGuiCond_FirstUseEver);
     ImGui::Begin("DMX Output");
@@ -37,7 +59,9 @@ void DMXWindow::draw() {
         std::ostringstream ss;
         ss << std::setw(3) << std::setfill('0') << (int) (data[i-1]);
 
-        float brightness = 0.8f * data[i-1]/255.0f;
+        float brightness = data[i-1]/255.0f; // Brightness in a scale from 0 - 1
+        brightness = doubleExponentialSeat(brightness, 0.7, 0.1);
+        brightness = 0.8f * brightness; // Brightness normalised for display
 
 		if (selectedChannel == i - 1) {
 			// Linear interpolation to increase the brightness so that we can see the button is selected
