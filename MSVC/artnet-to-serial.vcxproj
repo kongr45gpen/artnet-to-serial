@@ -124,10 +124,14 @@
   <ItemGroup>
     <ClCompile Include="..\ArtnetThread.cpp" />
     <ClCompile Include="..\artnetToSerial.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\ArtnetWindow.cpp" />
     <ClCompile Include="..\DataStatistics.cpp" />
@@ -147,7 +151,6 @@
     <ClCompile Include="..\platform\WindowsGraphics.cpp" />
     <ClCompile Include="..\SerialInterface.cpp" />
     <ClCompile Include="..\SerialThread.cpp" />
-    <ClCompile Include="artnetToSerialWindows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ArtnetThread.h" />

@@ -2,7 +2,6 @@
 // If you are new to ImGui, see examples/README.txt and documentation at the top of imgui.cpp.
 
 #include <imgui.h>
-#include "imgui_impl_glfw.h"
 #include "SerialInterface.h"
 #include "gui/SerialWindow.h"
 #include "LoggingUtilities.h"
@@ -25,7 +24,15 @@
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
+
+#ifdef _WIN32
+#include "../platform/WindowsGraphics.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
+#else
+#include "imgui_impl_glfw.h"
 #include <GLFW/glfw3.h>
+#endif
 
 int main(int, char **) {
 //    boost::log::add_file_log("sample.log");
@@ -40,6 +47,31 @@ int main(int, char **) {
     BOOST_LOG_TRIVIAL(info) << "Starting artnetToSerial...";
 //    boost::log::core::get()->set_logging_enabled(false);
 
+#ifdef _WIN32
+    // Create application window
+    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
+    ::RegisterClassEx(&wc);
+    HWND hwnd = CreateWindow(_T("ImGui Example"), _T("Artnet To Serial"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
+
+    // Initialize Direct3D
+    if (CreateDeviceD3D(hwnd) < 0)
+    {
+        CleanupDeviceD3D();
+        UnregisterClass(_T("ImGui Example"), wc.hInstance);
+        return 1;
+    }
+
+    // Show the window
+    ShowWindow(hwnd, SW_SHOWDEFAULT);
+    UpdateWindow(hwnd);
+
+    // Initialize ImGui
+    ImGui::CreateContext();
+
+    // Setup ImGui binding
+    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
+#else
     // Initialize ImGui
     ImGui::CreateContext();
 
@@ -54,6 +86,7 @@ int main(int, char **) {
 
     // Setup ImGui binding
     ImGui_ImplGlfw_Init(window, true);
+#endif
 
     bool show_test_window = false;
     bool show_another_window = false;
@@ -90,6 +123,25 @@ int main(int, char **) {
     dmxWindow.setSerialUpdater(serialUpdater);
 
     // Main loop
+#ifdef _WIN32
+    MSG msg;
+    ZeroMemory(&msg, sizeof(msg));
+    while (msg.message != WM_QUIT)
+    {
+        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+        if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            continue;
+        }
+        ImGui_ImplDX11_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+#else
     while (!glfwWindowShouldClose(window)) {
         if (glfwGetWindowAttrib(window, GLFW_ICONIFIED)) {
             // Don't waste CPU rendering when the window is minimised
@@ -98,6 +150,7 @@ int main(int, char **) {
         }
         glfwPollEvents();
         ImGui_ImplGlfw_NewFrame();
+#endif
 
         // 1. Show a simple window
         // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
@@ -112,18 +165,10 @@ int main(int, char **) {
                         ImGui::GetIO().Framerate);
         }
 
-        // 2. Show another simple window, this time using an explicit Begin/End pair
-        if (show_another_window) {
-            ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
-            ImGui::Begin("Another Window", &show_another_window);
-            ImGui::Text("Hello");
-            ImGui::End();
-        }
-
         // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
         if (show_test_window) {
-            ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
-            ImGui::ShowTestWindow(&show_test_window);
+            ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+            ImGui::ShowDemoWindow(&show_test_window);
         }
 
         serialWindow.draw();
@@ -132,6 +177,17 @@ int main(int, char **) {
         dmxWindow.draw();
 
         // Rendering
+#ifdef _WIN32
+        ImGui::Render();
+
+        g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
+        g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_color);
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+        g_pSwapChain->Present(1, 0); // Present with vsync
+        //g_pSwapChain->Present(0, 0); // Present without vsync
+#else
+        // Rendering
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
@@ -139,11 +195,18 @@ int main(int, char **) {
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui::Render();
         glfwSwapBuffers(window);
+#endif
     }
 
     // Cleanup
+#ifdef WIN32
+    ImGui_ImplDX11_Shutdown();
+    CleanupDeviceD3D();
+    UnregisterClass(_T("ImGui Example"), wc.hInstance);
+#else
     ImGui_ImplGlfw_Shutdown();
     glfwTerminate();
+#endif
 
     return 0;
 }

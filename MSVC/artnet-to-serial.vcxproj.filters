@@ -54,9 +54,6 @@
     <ClCompile Include="..\lib\imgui\imgui_draw.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="artnetToSerialWindows.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\ActivityLED.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
