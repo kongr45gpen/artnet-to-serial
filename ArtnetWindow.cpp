@@ -31,7 +31,7 @@ void ArtnetWindow::draw() {
     bool enabled;
 
     // Show the healthy LED for a number of milliseconds
-    ImGui::SameLine(0, ImGui::GetContentRegionAvail().x - 215);
+    ImGui::SameLine(0, ImGui::GetContentRegionAvail().x - 220);
     receivingLED.draw();
 
     ImGui::Separator();
