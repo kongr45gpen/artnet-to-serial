@@ -6,7 +6,8 @@
 #include "LogWindow.h"
 
 LogWindow::LogWindow() : items(400) {
-    items.push_back(std::make_pair(ImVec4(1.0,0.2,0.1,1.0), "Hello"));
+    items.push_back(std::make_pair(ImVec4(0.4, 0.8, 0.1, 1.0), "Log start"));
+    items.push_back(std::make_pair(ImVec4(0.4, 0.8, 0.1, 1.0), "[date time microseconds     ] [thread id ] [level] Message"));
 }
 
 void LogWindow::draw() {
@@ -21,10 +22,14 @@ void LogWindow::draw() {
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0,0));
     static ImGuiTextFilter filter;
-    filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
+    filter.Draw("Filter (\"incl,-excl\") (\"error\")", 100);
 
-    ImGui::SameLine(0, 100);
-    ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+    if (ImGui::GetContentRegionAvail().x > 500) {
+        ImGui::SameLine(0, 100);
+    } else {
+        ImGui::SameLine();
+    }
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
     if (ImGui::Combo("min level", &comboItem, "trace\0debug\0info\0warning\0error\0fatal\0\0")) {
         boost::log::trivial::severity_level level;
         switch (comboItem) {
