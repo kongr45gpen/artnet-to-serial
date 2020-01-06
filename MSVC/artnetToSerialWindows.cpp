@@ -202,6 +202,9 @@ int main(int, char**)
 	boost::thread t_1(artnetThread);
 	boost::thread t_2(serialThread);
 
+	// Pass some dependency injection
+	dmxWindow.setSerialUpdater(serialUpdater);
+
 	// Main loop
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
