@@ -14,6 +14,9 @@ netsh interface ipv4 add address "Ethernet" 2.168.1.4 255.0.0.0
 ## Block diagram
 ![Block diagram: Lighting control Software to artnet-to-serial to Arduino to DMX board and TLC5940 board. DMX board to DMX lights. TLC5940 to LED strip controllers to LED strips.](docs/diagram.png?raw=true "artnet-to-serial block diagram")
 
+## Screenshot
+![screenshot of the program](screenshot.png)
+
 ## Windows Development Dependencies
 - Microsoft Visual Studio 2017
 - [Boost binaries for Windows](https://www.boost.org/users/download/)
