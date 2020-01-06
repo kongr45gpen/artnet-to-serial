@@ -26,12 +26,16 @@ ArtnetThread::ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std
 
 void ArtnetThread::restartSocket() {
     try {
-        socket = std::make_shared<udp::socket>(*io, udp::endpoint(udp::v4(), 6454));
-//        socket = std::make_shared<udp::socket>(*io, udp::endpoint(boost::asio::ip::address::from_string("2.3.4.5"), 6454));
+        // Create and open the socket
+        socket = std::make_shared<udp::socket>(*io, udp::v4());
 
         // Allow other nodes to connect
         boost::asio::socket_base::reuse_address option(true);
         socket->set_option(option);
+
+        // Bind to the requested port
+        socket->bind(udp::endpoint(udp::v4(), 6454));
+//        socket->open(udp::endpoint(boost::asio::ip::address::from_string("2.3.4.5"), 6454));
 
         startReceive();
         BOOST_LOG_TRIVIAL(info) << "Art-Net socket initialised.";
