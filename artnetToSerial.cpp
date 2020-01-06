@@ -49,15 +49,15 @@ int main(int, char **) {
 
 #ifdef _WIN32
     // Create application window
-    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
+    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("artlight ImGui"), NULL };
     ::RegisterClassEx(&wc);
-    HWND hwnd = CreateWindow(_T("ImGui Example"), _T("Artnet To Serial"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
+    HWND hwnd = CreateWindow(_T("artlight ImGui"), _T("Artnet To Serial"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
     if (CreateDeviceD3D(hwnd) < 0)
     {
         CleanupDeviceD3D();
-        UnregisterClass(_T("ImGui Example"), wc.hInstance);
+        UnregisterClass(_T("artlight ImGui"), wc.hInstance);
         return 1;
     }
 
@@ -202,7 +202,7 @@ int main(int, char **) {
 #ifdef WIN32
     ImGui_ImplDX11_Shutdown();
     CleanupDeviceD3D();
-    UnregisterClass(_T("ImGui Example"), wc.hInstance);
+    UnregisterClass(_T("artlight ImGui"), wc.hInstance);
 #else
     ImGui_ImplGlfw_Shutdown();
     glfwTerminate();
