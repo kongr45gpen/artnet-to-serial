@@ -80,7 +80,7 @@ void ArtnetWindow::draw() {
 
 inline void ArtnetWindow::changeTriggered() {
     lock_guard<mutex> guard(callback_mtx_);
-    BOOST_LOG_TRIVIAL(debug) << "Interface changing to: " << ((dmxEnabled) ? "NONE" : (anySelected) ? "ANY" : selectedInterface);
+    BOOST_LOG_TRIVIAL(debug) << "Interface changing to: " << ((dmxEnabled) ? (anySelected) ? "ANY" : selectedInterface : "NONE");
     if (deviceCallback) {
         deviceCallback(anySelected, selectedInterface);
     }

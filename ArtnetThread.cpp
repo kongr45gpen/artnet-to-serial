@@ -39,7 +39,7 @@ void ArtnetThread::restartSocket() {
 
         // Bind to the requested port
         socket->bind(udp::endpoint(udp::v4(), 6454));
-//        socket->open(udp::endpoint(boost::asio::ip::address::from_string("2.3.4.5"), 6454));
+//        socket->bind(udp::endpoint(boost::asio::ip::address::from_string("2.168.0.0"), 6454));
 
         startReceive();
         BOOST_LOG_TRIVIAL(info) << "Art-Net socket initialised.";
