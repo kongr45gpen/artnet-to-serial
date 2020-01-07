@@ -133,10 +133,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\ArtnetWindow.cpp" />
     <ClCompile Include="..\DataStatistics.cpp" />
     <ClCompile Include="..\DMXBucket.cpp" />
     <ClCompile Include="..\gui\ActivityLED.cpp" />
+    <ClCompile Include="..\gui\ArtnetWindow.cpp" />
     <ClCompile Include="..\gui\DMXWindow.cpp" />
     <ClCompile Include="..\gui\LogWindow.cpp" />
     <ClCompile Include="..\gui\SerialWindow.cpp" />

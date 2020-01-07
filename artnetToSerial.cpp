@@ -232,7 +232,7 @@ int main(int, char **) {
     }
 
     // Cleanup
-#ifdef WIN32
+#ifdef _WIN32
     ImGui_ImplDX11_Shutdown();
     CleanupDeviceD3D();
     UnregisterClass(_T("artlight ImGui"), wc.hInstance);
