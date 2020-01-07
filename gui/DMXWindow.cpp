@@ -130,8 +130,8 @@ void DMXWindow::draw() {
         updated = true;
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("1/2")) {
-		selectedChannelValueSlider = 127;
+	if (ImGui::Button("1/4")) {
+		selectedChannelValueSlider = 63;
         updated = true;
 	}
 	ImGui::SameLine();
