@@ -9,6 +9,7 @@
 #include <queue>
 #include <functional>
 #include "ActivityLED.h"
+#include "../DataStatistics.h"
 
 class ArtnetWindow {
     std::map<std::string, std::string> controllers; // name -> description map
@@ -26,8 +27,11 @@ class ArtnetWindow {
 
     boost::mutex devices_mtx_;
     boost::mutex callback_mtx_;
+    boost::mutex statistics_mtx_;
     ArtnetWindow(const ArtnetWindow&); // no copy constructor, due to mutexes
 public:
+    DataStatistics statistics;
+
     ArtnetWindow();
     void draw();
 

@@ -7,25 +7,29 @@
 
 class DataStatistics {
     float oldAverage = 0.0f;
+
+
     int sum = 0;
-//    int count = 0;
+    int count = 0;
 
     boost::chrono::steady_clock::time_point timer;
     boost::chrono::duration<int, boost::milli> duration;
 
     boost::mutex mtx_;
+
+    void updateMetrics();
 public:
-    DataStatistics(const boost::chrono::duration<int, boost::milli> &duration = boost::chrono::seconds(1));
+    explicit DataStatistics(const boost::chrono::duration<int, boost::milli> &duration = boost::chrono::seconds(1));
 
     inline void addOne() {
         boost::lock_guard<boost::mutex> guard(mtx_);
         sum++;
-//        count++;
+        count++;
     };
     inline void add(int number) {
         boost::lock_guard<boost::mutex> guard(mtx_);
         sum += number;
-//        count++;
+        count++;
     };
 
     float getAverage();

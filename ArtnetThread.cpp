@@ -144,6 +144,8 @@ inline void ArtnetThread::OpDmx(std::size_t size) {
         dmxBucket->setData(buffer.begin() + 18, buffer.begin() + 18 + ((int) length));
         serialUpdater->announceDataReady();
     }
+
+    artnetWindow->statistics.addOne();
 }
 
 void ArtnetThread::OpPoll() {

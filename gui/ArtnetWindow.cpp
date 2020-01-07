@@ -8,7 +8,8 @@
 using boost::lock_guard;
 using boost::mutex;
 
-ArtnetWindow::ArtnetWindow() : receivingLED({0.2f, 1.0f, 0, 0.7f}, boost::chrono::milliseconds(50), "Receiving") {
+ArtnetWindow::ArtnetWindow() : receivingLED({0.2f, 1.0f, 0, 0.7f}, boost::chrono::milliseconds(50), "Receiving"),
+    statistics(boost::chrono::seconds(2)) {
     controllers.emplace("127.0.0.1", "Localhost");
 }
 
@@ -31,7 +32,7 @@ void ArtnetWindow::draw() {
     bool enabled;
 
     // Show the healthy LED for a number of milliseconds
-    ImGui::SameLine(0, ImGui::GetContentRegionAvail().x - 220);
+    ImGui::SameLine(0, ImGui::GetContentRegionAvail().x - 225);
     receivingLED.draw();
 
     ImGui::Separator();
@@ -71,6 +72,8 @@ void ArtnetWindow::draw() {
     if (ImGui::Checkbox("Art-Net DMX input enabled", &dmxEnabled)) {
         changeTriggered();
     }
+    ImGui::SameLine(0, ImGui::GetContentRegionAvail().x - 350);
+    ImGui::Text("Frame rate: %.1f fps", statistics.getAverage());
 
     ImGui::End();
 }
