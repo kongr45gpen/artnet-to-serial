@@ -214,7 +214,7 @@ void SerialInterface::write(const std::array<uint8_t, 512> &dmxValues) {
 
         std::string data = ss.str();
 
-        boost::asio::write(*serial, boost::asio::buffer(data.c_str(), data.length()));
+        writeWithTimeout(*serial, boost::asio::buffer(data.c_str(), data.length()), boost::posix_time::milliseconds(100));
 
         stats.add((int) data.length());
         if (led) led->announce();
