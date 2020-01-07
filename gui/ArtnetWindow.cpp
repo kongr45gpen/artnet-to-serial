@@ -45,6 +45,9 @@ void ArtnetWindow::draw() {
     }
     ImGui::PopStyleColor();
 
+    const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing(); // 1 separator, 1 input text
+    ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false); // Leave room for 1 separator + 1 InputText
+
     for (const auto &controller : controllers) {
         std::ostringstream ss;
         ss << controller.first << "\n";
@@ -62,14 +65,24 @@ void ArtnetWindow::draw() {
         changeTriggered();
     }
 
+    ImGui::EndChild();
+    ImGui::Separator();
+
+    if (ImGui::Checkbox("Art-Net DMX input enabled", &dmxEnabled)) {
+        changeTriggered();
+    }
+
     ImGui::End();
 }
 
 inline void ArtnetWindow::changeTriggered() {
-    lock_guard<mutex> guard(device_callback_mtx_);
-    BOOST_LOG_TRIVIAL(debug) << "Interface changing to: " << ((anySelected) ? "ANY" : selectedInterface);
+    lock_guard<mutex> guard(callback_mtx_);
+    BOOST_LOG_TRIVIAL(debug) << "Interface changing to: " << ((dmxEnabled) ? "NONE" : (anySelected) ? "ANY" : selectedInterface);
     if (deviceCallback) {
         deviceCallback(anySelected, selectedInterface);
+    }
+    if (enabledCallback) {
+        enabledCallback(dmxEnabled);
     }
 }
 
@@ -83,11 +96,16 @@ void ArtnetWindow::pushController(const std::string &address) {
 }
 
 void ArtnetWindow::setDeviceCallback(const std::function<void(bool, const std::string &)> &deviceCallback) {
-    lock_guard<mutex> guard(device_callback_mtx_);
+    lock_guard<mutex> guard(callback_mtx_);
     ArtnetWindow::deviceCallback = deviceCallback;
 }
 
 void ArtnetWindow::pushControllerDescription(const std::string &address, const std::string &description) {
     lock_guard<mutex> guard(devices_mtx_);
     controllers[address] = description;
+}
+
+void ArtnetWindow::setEnabledCallback(const std::function<void(bool)> &enabledCallback) {
+    lock_guard<mutex> guard(callback_mtx_);
+    ArtnetWindow::enabledCallback = enabledCallback;
 }

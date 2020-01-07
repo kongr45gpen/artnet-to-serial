@@ -3,10 +3,10 @@
 
 
 #include <iostream>
-#include <boost/asio/io_service.hpp> // TODO: Fixed location (boost/asio/impl/io_service.hpp)
+#include <boost/asio/io_service.hpp>
 #include <boost/array.hpp>
 #include <boost/asio/ip/udp.hpp>
-#include "ArtnetWindow.h"
+#include "gui/ArtnetWindow.h"
 #include "DMXBucket.h"
 #include "SerialThread.h"
 
@@ -20,6 +20,9 @@ class ArtnetThread {
     std::shared_ptr<boost::asio::ip::udp::socket> socket;
     boost::asio::ip::udp::endpoint remoteEndpoint;
     std::array<char, 600> buffer;
+
+    // TODO: Do not copy threads so this is not a shared pointer
+    std::shared_ptr<std::atomic_bool> outputEnabled;
 
     boost::optional<boost::asio::ip::address> requestedAddress;
     std::shared_ptr<boost::mutex> reqAddress_mtx_;
@@ -42,6 +45,7 @@ public:
     void restartSocket();
 
     void endpointSelectCallback(bool anySelected, const std::string &address);
+    void outputEnabledCallback(bool outputEnabled);
 
 };
 

@@ -38,7 +38,7 @@ add_executable(ArtnetToSerial
         gui/SerialWindow.cpp
         LoggingUtilities.cpp
         gui/LogWindow.cpp
-        ArtnetWindow.cpp
+        gui/ArtnetWindow.cpp
         ArtnetThread.cpp
         DMXBucket.cpp
         gui/DMXWindow.cpp

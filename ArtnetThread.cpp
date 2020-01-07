@@ -11,6 +11,8 @@ void ArtnetThread::operator()() {
     boost::this_thread::sleep_for(boost::chrono::seconds(1)); // sleep, because why not
     artnetWindow->setDeviceCallback(
             std::bind(&ArtnetThread::endpointSelectCallback, this, std::placeholders::_1, std::placeholders::_2));
+    artnetWindow->setEnabledCallback(
+            std::bind(&ArtnetThread::outputEnabledCallback, this, std::placeholders::_1));
     // set the callback here, otherwise the copied data might be wrong
 
     restartSocket();
@@ -22,6 +24,8 @@ ArtnetThread::ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std
         artnetWindow(window), dmxBucket(dmxBucket), serialUpdater(serialUpdater) {
     io = std::make_shared<io_service>();
     reqAddress_mtx_ = std::make_shared<boost::mutex>();
+    outputEnabled = std::make_shared<std::atomic_bool>();
+    outputEnabled->store(true);
 }
 
 void ArtnetThread::restartSocket() {
@@ -136,8 +140,10 @@ inline void ArtnetThread::OpDmx(std::size_t size) {
         return;
     }
 
-    dmxBucket->setData(buffer.begin() + 18, buffer.begin() + 18 + ((int) length));
-    serialUpdater->announceDataReady();
+    if (outputEnabled->load()) {
+        dmxBucket->setData(buffer.begin() + 18, buffer.begin() + 18 + ((int) length));
+        serialUpdater->announceDataReady();
+    }
 }
 
 void ArtnetThread::OpPoll() {
@@ -151,4 +157,9 @@ void ArtnetThread::endpointSelectCallback(bool anySelected, const std::string &a
     } else {
         requestedAddress.reset(boost::asio::ip::address::from_string(address));
     }
+}
+
+void ArtnetThread::outputEnabledCallback(bool outputEnabled) {
+    // No need for a mutex, since outputEnabled is atomic
+    ArtnetThread::outputEnabled->store(outputEnabled);
 }

@@ -6,7 +6,7 @@
 #include "gui/SerialWindow.h"
 #include "LoggingUtilities.h"
 #include "gui/LogWindow.h"
-#include "ArtnetWindow.h"
+#include "gui/ArtnetWindow.h"
 #include "ArtnetThread.h"
 #include "DMXBucket.h"
 #include "gui/DMXWindow.h"
