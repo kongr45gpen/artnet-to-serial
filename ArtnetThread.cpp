@@ -11,6 +11,8 @@ void ArtnetThread::operator()() {
     boost::this_thread::sleep_for(boost::chrono::seconds(1)); // sleep, because why not
     artnetWindow->setDeviceCallback(
             std::bind(&ArtnetThread::endpointSelectCallback, this, std::placeholders::_1, std::placeholders::_2));
+    artnetWindow->setEnabledCallback(
+            std::bind(&ArtnetThread::outputEnabledCallback, this, std::placeholders::_1));
     // set the callback here, otherwise the copied data might be wrong
 
     restartSocket();
@@ -22,16 +24,22 @@ ArtnetThread::ArtnetThread(const std::shared_ptr<ArtnetWindow> window, const std
         artnetWindow(window), dmxBucket(dmxBucket), serialUpdater(serialUpdater) {
     io = std::make_shared<io_service>();
     reqAddress_mtx_ = std::make_shared<boost::mutex>();
+    outputEnabled = std::make_shared<std::atomic_bool>();
+    outputEnabled->store(true);
 }
 
 void ArtnetThread::restartSocket() {
     try {
-        socket = std::make_shared<udp::socket>(*io, udp::endpoint(udp::v4(), 6454));
-//        socket = std::make_shared<udp::socket>(*io, udp::endpoint(boost::asio::ip::address::from_string("2.3.4.5"), 6454));
+        // Create and open the socket
+        socket = std::make_shared<udp::socket>(*io, udp::v4());
 
         // Allow other nodes to connect
         boost::asio::socket_base::reuse_address option(true);
         socket->set_option(option);
+
+        // Bind to the requested port
+        socket->bind(udp::endpoint(udp::v4(), 6454));
+//        socket->bind(udp::endpoint(boost::asio::ip::address::from_string("2.168.0.0"), 6454));
 
         startReceive();
         BOOST_LOG_TRIVIAL(info) << "Art-Net socket initialised.";
@@ -132,8 +140,12 @@ inline void ArtnetThread::OpDmx(std::size_t size) {
         return;
     }
 
-    dmxBucket->setData(buffer.begin() + 18, buffer.begin() + 18 + ((int) length));
-    serialUpdater->announceDataReady();
+    if (outputEnabled->load()) {
+        dmxBucket->setData(buffer.begin() + 18, buffer.begin() + 18 + ((int) length));
+        serialUpdater->announceDataReady();
+    }
+
+    artnetWindow->statistics.addOne();
 }
 
 void ArtnetThread::OpPoll() {
@@ -147,4 +159,9 @@ void ArtnetThread::endpointSelectCallback(bool anySelected, const std::string &a
     } else {
         requestedAddress.reset(boost::asio::ip::address::from_string(address));
     }
+}
+
+void ArtnetThread::outputEnabledCallback(bool outputEnabled) {
+    // No need for a mutex, since outputEnabled is atomic
+    ArtnetThread::outputEnabled->store(outputEnabled);
 }

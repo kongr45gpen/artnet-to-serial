@@ -3,6 +3,13 @@
 DataStatistics::DataStatistics(const boost::chrono::duration<int, boost::milli> &duration) : duration(duration), timer(boost::chrono::steady_clock::now()) {}
 
 float DataStatistics::getAverage() {
+    updateMetrics();
+
+    return oldAverage;
+}
+
+void DataStatistics::updateMetrics() {
+    // We assume that exactly duration time has passed since the last check
     if (boost::chrono::steady_clock::now() - timer > duration) {
         boost::lock_guard<boost::mutex> guard(mtx_);
 
@@ -14,9 +21,9 @@ float DataStatistics::getAverage() {
             oldAverage = (float) sum / (duration.count() / 1000.0f);
         }
 
+        // Reset values; start counting again
         sum = 0;
+        count = 0;
         timer = boost::chrono::steady_clock::now();
     }
-
-    return oldAverage;
 }

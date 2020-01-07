@@ -5,14 +5,22 @@
 #include <vector>
 #include <string>
 #include <boost/asio.hpp>
+#include <boost/asio/basic_serial_port.hpp>
 #include <boost/thread/mutex.hpp>
 #include "gui/ActivityLED.h"
 #include "DataStatistics.h"
 #include "DMXBucket.h"
+#include "config.h"
 
 class SerialInterface {
+#ifdef HAVE_BOOST_BASIC_SERIAL_PORT
+    typedef boost::asio::basic_serial_port<boost::asio::io_context::executor_type> SerialPort;
+#else
+    typedef boost::asio::serial_port SerialPort;
+#endif
+
     std::shared_ptr<boost::asio::io_context> io;
-    std::shared_ptr<boost::asio::basic_serial_port<boost::asio::io_context::executor_type> > serial;
+    std::shared_ptr<SerialPort> serial;
     std::atomic_bool connected; // Used just for the indicator, might not be trustworthy
 
     std::shared_ptr<ActivityLED> led;
