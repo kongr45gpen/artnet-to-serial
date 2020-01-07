@@ -52,7 +52,11 @@ void ArtnetWindow::draw() {
     for (const auto &controller : controllers) {
         std::ostringstream ss;
         ss << controller.first << "\n";
-        ss << controller.second;
+        if (!controller.second.empty()) {
+            ss << controller.second;
+        } else {
+            ss << " ";
+        }
 
         selected = (selectedInterface == controller.first && !anySelected);
 
@@ -61,6 +65,14 @@ void ArtnetWindow::draw() {
             anySelected = false;
         }
     }
+
+    ImGui::PushStyleColor(ImGuiCol_Text, {1.0f, 0.78f, 0.58f, 1.0f});
+    selected = (selectedInterface == "255.255.255.255" && !anySelected);
+    if (ImGui::Selectable("None\n ", &selected) && selected) {
+        anySelected = false;
+        selectedInterface = "255.255.255.255";
+    }
+    ImGui::PopStyleColor();
 
     if (oldSelection != getSelection()) {
         changeTriggered();
